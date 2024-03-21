@@ -62,7 +62,7 @@ export class SignupComponent implements OnInit {
       this.authService.signup(formData).subscribe({
         next: (response) => {
           console.log('signup successful');
-          this.navigate();
+          this.router.navigate(['home']);
         },
         error: (err) => {
           this.errorMessage = err.error.message;
@@ -73,6 +73,6 @@ export class SignupComponent implements OnInit {
   }
 
   navigate(): void {
-    this.router.navigate(['/signin']);
+    this.router.navigate(['signin']);
   }
 }
