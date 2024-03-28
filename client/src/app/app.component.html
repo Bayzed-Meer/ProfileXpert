@@ -9,8 +9,11 @@
       <li>
         <a routerLink="signup" routerLinkActive="text-blue-600">SignUp</a>
       </li>
-      <li>
+      <li *ngIf="!isLoggedIn">
         <a routerLink="signin" routerLinkActive="text-blue-600">SignIn</a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <button (click)="logout()">SignOut</button>
       </li>
     </ul>
   </div>
