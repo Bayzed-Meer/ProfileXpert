@@ -17,6 +17,11 @@ export class UserService {
     return this.http.post<any>(`${this.API}/users/${this.userId}`, profileData);
   }
 
+  getUserData(): Observable<any> {
+    this.getUserId();
+    return this.http.get<any>(`${this.API}/users/${this.userId}`);
+  }
+
   private getUserId(): void {
     const token = localStorage.getItem('Token');
     if (token) {

@@ -1,18 +1,17 @@
-const User = require("../models/user");
+const AuthUser = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 exports.signup = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await AuthUser.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const newUser = new User({ email, password });
+    const newUser = new AuthUser({ email, password });
 
     await newUser.save();
 
@@ -35,7 +34,7 @@ exports.signin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await AuthUser.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
