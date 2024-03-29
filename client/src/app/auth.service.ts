@@ -65,6 +65,8 @@ export class AuthService {
       const expirationTime = decodedToken.exp * 1000;
       if (Date.now() <= expirationTime) {
         this.isLoggedInSubject.next(true);
+      } else {
+        this.logout();
       }
     }
   }

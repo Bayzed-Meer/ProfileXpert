@@ -18,7 +18,6 @@ export class AppComponent {
   ngOnInit(): void {
     this.authService.isLoggedIn().subscribe((isLoggedIn) => {
       this.isLoggedIn = isLoggedIn;
-      console.log(this.isLoggedIn);
     });
   }
 

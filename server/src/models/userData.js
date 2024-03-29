@@ -32,7 +32,6 @@ const userDataSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      companyLogo: String,
       jobDescription: String,
     },
   ],

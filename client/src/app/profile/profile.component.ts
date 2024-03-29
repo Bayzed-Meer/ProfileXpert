@@ -42,7 +42,6 @@ export class ProfileComponent implements OnInit {
         current: [false],
         jobTitle: [''],
         company: [''],
-        companyLogo: [null],
         jobDescription: [''],
       })
     );
@@ -87,13 +86,6 @@ export class ProfileComponent implements OnInit {
           `workExperiences[${index}][jobDescription]`,
           control.get('jobDescription')!.value
         );
-        const companyLogo = control.get('companyLogo')!.value;
-        if (companyLogo instanceof File) {
-          formData.append(
-            `workExperiences[${index}][companyLogo]`,
-            companyLogo
-          );
-        }
       });
 
       this.userService.submitProfile(formData).subscribe({
@@ -115,14 +107,6 @@ export class ProfileComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.profileForm.get('profilePicture')!.setValue(file);
-    }
-  }
-
-  onCompanyLogoSelected(event: any, index: number) {
-    const file = event.target.files[0];
-    if (file) {
-      const control = this.workExperiences.at(index) as FormGroup;
-      control.get('companyLogo')!.setValue(file);
     }
   }
 }

@@ -10,13 +10,10 @@ export class UserService {
   private API: string = 'http://localhost:3000';
   private userId: string = '';
 
-  constructor(private http: HttpClient) {
-    this.getUserId();
-  }
+  constructor(private http: HttpClient) {}
 
   submitProfile(profileData: FormData): Observable<any> {
-    console.log(profileData);
-
+    this.getUserId();
     return this.http.post<any>(`${this.API}/users/${this.userId}`, profileData);
   }
 
