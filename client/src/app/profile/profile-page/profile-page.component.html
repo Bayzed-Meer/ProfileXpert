@@ -1,0 +1,22 @@
+<div class="profile-container" *ngIf="userData">
+  <h2>User Profile</h2>
+  <div class="profile-details">
+    <div><strong>Name:</strong> {{ userData.name }}</div>
+    <div><strong>Age:</strong> {{ userData.age }}</div>
+    <div>
+      <strong>Profile Picture:</strong>
+      <img [src]="getUserProfilePictureUrl()" alt="Profile Picture" />
+    </div>
+    <div><strong>Work Experiences:</strong></div>
+    <ul>
+      <li *ngFor="let experience of userData.workExperiences">
+        <div><strong>Job Title:</strong> {{ experience.jobTitle }}</div>
+        <div><strong>Company:</strong> {{ experience.company }}</div>
+        <div>
+          <strong>Start Date:</strong> {{ experience.startDate | date }}
+        </div>
+        <div><strong>End Date:</strong> {{ experience.endDate | date }}</div>
+      </li>
+    </ul>
+  </div>
+</div>

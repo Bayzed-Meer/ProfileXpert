@@ -1,27 +1,48 @@
 const User = require("../models/userData");
 
-exports.createUserData = async (req, res) => {
+exports.saveOrUpdateUserData = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = new User({
-      userId: userId,
-      name: req.body.name,
-      age: req.body.age,
-      profilePicture: req.file.path,
-      workExperiences: req.body.workExperiences.map((experience) => ({
+    let userData = await User.findOne({ userId: userId });
+
+    if (!userData) {
+      userData = new User({
+        userId: userId,
+        name: req.body.name,
+        age: req.body.age,
+        profilePicture: req.file ? req.file.path : "",
+        workExperiences: req.body.workExperiences.map((experience) => ({
+          startDate: experience.startDate,
+          endDate: experience.endDate,
+          current: experience.current,
+          jobTitle: experience.jobTitle,
+          company: experience.company,
+          jobDescription: experience.jobDescription,
+        })),
+      });
+    } else {
+      userData.name = req.body.name;
+      userData.age = req.body.age;
+      userData.profilePicture = req.file
+        ? req.file.path
+        : userData.profilePicture;
+      userData.workExperiences = req.body.workExperiences.map((experience) => ({
         startDate: experience.startDate,
         endDate: experience.endDate,
         current: experience.current,
         jobTitle: experience.jobTitle,
         company: experience.company,
-      })),
-    });
+        jobDescription: experience.jobDescription,
+      }));
+    }
 
-    await user.save();
+    await userData.save();
 
-    res.status(201).json({ message: "Profile data saved successfully" });
+    res
+      .status(200)
+      .json({ message: "Profile data saved/updated successfully" });
   } catch (error) {
-    console.error("Error saving profile data:", error);
+    console.error("Error saving/updating profile data:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const path = require("path");
 
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/uploads", express.static("uploads"));
 
 //routes
 app.use("/auth", authRoute);

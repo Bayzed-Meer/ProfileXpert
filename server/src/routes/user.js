@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 
     const ext = path.extname(file.originalname);
 
-    const fileName = `${firstName}_${lastFourDigits}${ext}`;
+    const fileName = `${firstName}${lastFourDigits}${ext}`;
 
     cb(null, fileName);
   },
@@ -26,7 +26,7 @@ const upload = multer({ storage: storage });
 router.post(
   "/:userId",
   upload.single("profilePicture"),
-  userController.createUserData
+  userController.saveOrUpdateUserData
 );
 
 router.get("/:userId", userController.getUserData);
