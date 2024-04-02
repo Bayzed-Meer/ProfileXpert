@@ -42,6 +42,15 @@ exports.saveOrUpdateUserData = async (req, res) => {
       .status(200)
       .json({ message: "Profile data saved/updated successfully" });
   } catch (error) {
+    if (error.name === "ValidationError") {
+      let validationErrors = [];
+      for (let field in error.errors) {
+        validationErrors.push(error.errors[field].message);
+      }
+      return res
+        .status(400)
+        .json({ message: "Validation error", errors: validationErrors });
+    }
     console.error("Error saving/updating profile data:", error);
     res.status(500).json({ message: "Server error" });
   }

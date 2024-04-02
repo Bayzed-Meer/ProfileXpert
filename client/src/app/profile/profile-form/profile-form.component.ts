@@ -18,6 +18,7 @@ import { UserService } from '../../user.service';
 })
 export class ProfileFormComponent implements OnInit {
   profileForm!: FormGroup;
+  errorMessage: string = '';
 
   @Output() formSubmitted = new EventEmitter<void>();
 
@@ -25,12 +26,13 @@ export class ProfileFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getUserData().subscribe((userData) => {
-      this.profileForm = this.createProfileForm(userData);
+      if (userData) this.profileForm = this.setProfileData(userData);
     });
+
     this.profileForm = this.fb.group({
-      name: [''],
+      name: ['', Validators.required],
       profilePicture: [null],
-      age: [''],
+      age: ['', Validators.required],
       workExperiences: this.fb.array([]),
     });
   }
@@ -39,7 +41,7 @@ export class ProfileFormComponent implements OnInit {
     return this.profileForm.get('workExperiences') as FormArray;
   }
 
-  createProfileForm(userData: any): FormGroup {
+  setProfileData(userData: any): FormGroup {
     return this.fb.group({
       name: [userData.name],
       age: [userData.age],
@@ -60,19 +62,20 @@ export class ProfileFormComponent implements OnInit {
   }
 
   addWorkExperience() {
-    this.workExperiences.push(
-      this.fb.group({
-        startDate: [''],
-        endDate: [''],
-        current: [false],
-        jobTitle: [''],
-        company: [''],
-        jobDescription: [''],
-      })
-    );
+    const newWorkExperience = this.fb.group({
+      startDate: ['', Validators.required],
+      endDate: [''],
+      current: [false],
+      jobTitle: ['', Validators.required],
+      company: ['', Validators.required],
+      jobDescription: ['', Validators.required],
+    });
+    this.workExperiences.push(newWorkExperience);
   }
 
   onSubmit() {
+    console.log(this.profileForm);
+
     if (this.profileForm.valid) {
       const formData = new FormData();
 
@@ -94,7 +97,7 @@ export class ProfileFormComponent implements OnInit {
         );
         formData.append(
           `workExperiences[${index}][endDate]`,
-          control.get('endDate')!.value
+          control.get('current')!.value ? '' : control.get('endDate')!.value
         );
         formData.append(
           `workExperiences[${index}][current]`,
@@ -119,8 +122,9 @@ export class ProfileFormComponent implements OnInit {
           console.log('Profile submitted successfully:', response);
           this.formSubmitted.emit();
         },
-        error: (error) => {
-          console.error('Error submitting profile:', error);
+        error: (err) => {
+          console.error('Error submitting profile:', err);
+          this.errorMessage = err.error.errors[0];
         },
       });
     }

@@ -1,6 +1,11 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 
-export const confirmPasswordValidator: ValidatorFn = (
+export const passwordMatchValidator: ValidatorFn = (
   control: AbstractControl
 ): ValidationErrors | null => {
   const password = control.get('password')!.value;

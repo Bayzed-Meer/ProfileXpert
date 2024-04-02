@@ -3,7 +3,7 @@
     <div><a routerLink="home">profileXpert</a></div>
     <ul class="flex justify-around items-center gap-12">
       <li><a routerLink="home" routerLinkActive="text-blue-600">Home</a></li>
-      <li>
+      <li *ngIf="isLoggedIn">
         <a routerLink="profile" routerLinkActive="text-blue-600">Profile</a>
       </li>
       <li>

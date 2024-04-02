@@ -22,8 +22,22 @@ const userDataSchema = new mongoose.Schema({
         type: Date,
         required: true,
       },
-      endDate: Date,
-      current: Boolean,
+      endDate: {
+        type: Date,
+        required: function () {
+          return !this.current;
+        },
+        validate: {
+          validator: function (value) {
+            return !value || value > this.startDate;
+          },
+          message: "End date must be after start date",
+        },
+      },
+      current: {
+        type: Boolean,
+        default: false,
+      },
       jobTitle: {
         type: String,
         required: true,
@@ -37,4 +51,6 @@ const userDataSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("UserData", userDataSchema);
+const User = mongoose.model("UserData", userDataSchema);
+
+module.exports = User;

@@ -14,6 +14,17 @@
       id="name"
       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
     />
+    <!-- Error message for Name -->
+    <div
+      *ngIf="
+        profileForm.get('name')!.touched && profileForm.get('name')!.invalid
+      "
+      class="text-red-500 text-sm mt-1"
+    >
+      <span *ngIf="profileForm.get('name')!.errors?.['required']">
+        Name is required.
+      </span>
+    </div>
   </div>
   <div class="mb-6">
     <label for="profilePicture" class="block text-sm font-medium text-gray-700"
@@ -37,6 +48,15 @@
       id="age"
       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
     />
+    <!-- Error message for Age -->
+    <div
+      *ngIf="profileForm.get('age')!.touched && profileForm.get('age')!.invalid"
+      class="text-red-500 text-sm mt-1"
+    >
+      <span *ngIf="profileForm.get('age')!.errors?.['required']">
+        Age is required.
+      </span>
+    </div>
   </div>
   <div formArrayName="workExperiences">
     <div
@@ -64,20 +84,34 @@
             >Start Date:</label
           >
           <input
-            type="text"
+            type="date"
             formControlName="startDate"
             id="startDate{{ i }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           />
+          <!-- Error message for Start Date -->
+          <div
+            *ngIf="
+              profileForm.get('workExperiences.' + i + '.startDate')!.touched &&
+              profileForm.get('workExperiences.' + i + '.startDate')!.invalid
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            <span
+              *ngIf="profileForm.get('workExperiences.' + i + '.startDate')!.errors?.['required']"
+            >
+              Start Date is required.
+            </span>
+          </div>
         </div>
-        <div>
+        <div *ngIf="!workExperience.get('current')!.value">
           <label
             for="endDate{{ i }}"
             class="block text-sm font-medium text-gray-700"
             >End Date:</label
           >
           <input
-            type="text"
+            type="date"
             formControlName="endDate"
             id="endDate{{ i }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
@@ -108,12 +142,26 @@
             id="jobTitle{{ i }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           />
+          <!-- Error message for Job Title -->
+          <div
+            *ngIf="
+              profileForm.get('workExperiences.' + i + '.jobTitle')!.touched &&
+              profileForm.get('workExperiences.' + i + '.jobTitle')!.invalid
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            <span
+              *ngIf="profileForm.get('workExperiences.' + i + '.jobTitle')!.errors?.['required']"
+            >
+              Job Title is required.
+            </span>
+          </div>
         </div>
         <div>
           <label
             for="company{{ i }}"
             class="block text-sm font-medium text-gray-700"
-            >Company:</label
+            >Company Name:</label
           >
           <input
             type="text"
@@ -121,8 +169,21 @@
             id="company{{ i }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           />
+          <!-- Error message for Company Name -->
+          <div
+            *ngIf="
+              profileForm.get('workExperiences.' + i + '.company')!.touched &&
+              profileForm.get('workExperiences.' + i + '.company')!.invalid
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            <span
+              *ngIf="profileForm.get('workExperiences.' + i + '.company')!.errors?.['required']"
+            >
+              Company Name is required.
+            </span>
+          </div>
         </div>
-
         <div>
           <label
             for="jobDescription{{ i }}"
@@ -134,10 +195,32 @@
             id="jobDescription{{ i }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           ></textarea>
+          <!-- Error message for Job Description -->
+          <div
+            *ngIf="
+              profileForm.get('workExperiences.' + i + '.jobDescription')!
+                .touched &&
+              profileForm.get('workExperiences.' + i + '.jobDescription')!
+                .invalid
+            "
+            class="text-red-500 text-sm mt-1"
+          >
+            <span
+              *ngIf="profileForm.get('workExperiences.' + i + '.jobDescription')!.errors?.['required']"
+            >
+              Job Description is required.
+            </span>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Error message for server-side errors -->
+  <span *ngIf="errorMessage" class="text-red-500 text-sm">
+    {{ errorMessage }}
+  </span>
+
   <button
     type="button"
     (click)="addWorkExperience()"

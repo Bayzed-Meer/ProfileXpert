@@ -28,18 +28,12 @@ export class SigninComponent {
   ngOnInit() {
     this.signin = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.maxLength(32),
-        ],
-      ],
+      password: ['', [Validators.required]],
     });
   }
 
   onSubmit() {
+    this.markFormGroupTouched(this.signin);
     if (this.signin.valid) {
       const formData = { ...this.signin.value };
 
@@ -54,6 +48,16 @@ export class SigninComponent {
         },
       });
     }
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach((control) => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   navigate(): void {

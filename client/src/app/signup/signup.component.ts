@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { confirmPasswordValidator } from '../custom-validators';
+import { passwordMatchValidator } from '../custom-validators';
 
 @Component({
   selector: 'app-signup',
@@ -20,6 +20,7 @@ import { confirmPasswordValidator } from '../custom-validators';
 export class SignupComponent implements OnInit {
   signup!: FormGroup;
   errorMessage: string = '';
+
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -36,6 +37,9 @@ export class SignupComponent implements OnInit {
             Validators.required,
             Validators.minLength(8),
             Validators.maxLength(32),
+            Validators.pattern(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/
+            ),
           ],
         ],
         confirmPassword: [
@@ -48,12 +52,13 @@ export class SignupComponent implements OnInit {
         ],
       },
       {
-        validators: confirmPasswordValidator,
+        validators: passwordMatchValidator,
       }
     );
   }
 
   onSubmit() {
+    this.markFormGroupTouched(this.signup);
     if (this.signup.valid) {
       const formData = { ...this.signup.value };
 
@@ -70,6 +75,16 @@ export class SignupComponent implements OnInit {
         },
       });
     }
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach((control) => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   navigate(): void {
