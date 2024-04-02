@@ -1,153 +1,144 @@
-<div class="bg-gray-50 dark:bg-gray-900">
-  <!-- Form Container -->
-  <div
-    class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0"
-  >
-    <!-- Form Wrapper -->
-    <div
-      class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
-    >
-      <!-- Form Content -->
-      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <!-- Title -->
-        <h1
-          class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
-        >
-          Create an account
-        </h1>
-        <!-- Sign Up Form -->
-        <form
-          [formGroup]="signup"
-          (ngSubmit)="onSubmit()"
-          class="space-y-4 md:space-y-6"
-        >
-          <!-- Email Input -->
-          <div>
-            <label
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="example@example.com"
-              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-            <!-- Display email error messages -->
-            <div
-              *ngIf="
-                signup.get('email')!.invalid && signup.get('email')!.touched
-              "
-              class="text-red-500 text-sm mt-1"
-            >
-              <!-- Show error message -->
-              <span *ngIf="signup.get('email')!.errors?.['required']">
-                Email is required.
-              </span>
-              <span *ngIf="signup.get('email')!.errors?.['email']">
-                Invalid email format.
-              </span>
-            </div>
-          </div>
-
-          <!-- Password Input -->
-          <div>
-            <label
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              formControlName="password"
-              placeholder="••••••••"
-              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-            <!-- Password error messages -->
-            <div
-              *ngIf="
-                signup.get('password')!.invalid &&
-                signup.get('password')!.touched
-              "
-              class="text-red-500 text-sm mt-1"
-            >
-              <!-- Show error message -->
-              <span *ngIf="signup.get('password')!.errors?.['required']">
-                Password is required.
-              </span>
-              <span *ngIf="signup.get('password')!.errors?.['minlength']">
-                Password must be at least 8 characters long.
-              </span>
-              <span *ngIf="signup.get('password')!.errors?.['maxlength']">
-                Password cannot exceed 32 characters.
-              </span>
-              <span *ngIf="signup.get('password')!.errors?.['pattern']">
-                Password must contain at least one uppercase letter, one
-                lowercase letter, one digit, and one special character (e.g.,
-                &#64;, #, $, etc.).
-              </span>
-            </div>
-          </div>
-
-          <!-- Confirm Password Input -->
-          <div>
-            <label
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Confirm password
-            </label>
-            <input
-              type="password"
-              formControlName="confirmPassword"
-              placeholder="••••••••"
-              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-            <!-- Confirm Password error messages -->
-            <div
-              *ngIf="
-                signup.get('confirmPassword')!.invalid &&
-                signup.get('confirmPassword')!.touched
-              "
-              class="text-red-500 text-sm mt-1"
-            >
-              <!-- Show error message -->
-              <span *ngIf="signup.get('confirmPassword')!.errors?.['required']">
-                Confirm password is required.
-              </span>
-            </div>
-            <!-- Display password mismatch error -->
-            <div
-              *ngIf="signup.errors?.['passwordMisMatch'] && signup.get('confirmPassword')!.touched"
-            >
-              Passwords do not match.
-            </div>
-          </div>
-
-          <!-- Server-side Error Message -->
-          <span *ngIf="errorMessage" class="text-red-500 text-sm">
-            {{ errorMessage }}
-          </span>
-
-          <!-- Create Account Button -->
-          <button
-            type="submit"
-            class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+<!-- Form Container -->
+<div class="flex flex-col items-center justify-center min-h-[80vh]">
+  <!-- Form Wrapper -->
+  <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md">
+    <!-- Form Content -->
+    <div class="p-6 py-4 md:py-10 md:px-12">
+      <!-- Title -->
+      <h1 class="text-xl text-primary font-bold font-serif mb-6 md:text-2xl">
+        Create an account
+      </h1>
+      <!-- Sign Up Form -->
+      <form
+        [formGroup]="signup"
+        (ngSubmit)="onSubmit()"
+        class="space-y-4 md:space-y-6"
+      >
+        <!-- Email Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium font-serif text-gray-900"
           >
-            Create account
-          </button>
+            Email
+          </label>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="example@example.com"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+          />
+          <!-- Display email error messages -->
+          <div
+            *ngIf="signup.get('email')!.invalid && signup.get('email')!.touched"
+            class="text-red-500 text-sm font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="signup.get('email')!.errors?.['required']">
+              Email is required.
+            </span>
+            <span *ngIf="signup.get('email')!.errors?.['email']">
+              Invalid email format.
+            </span>
+          </div>
+        </div>
 
-          <!-- Login Link -->
-          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-            Already have an account?
-            <a
-              class="font-medium text-primary-600 hover:underline dark:text-primary-500 cursor-pointer"
-              (click)="navigate()"
-              >Login here</a
-            >
-          </p>
-        </form>
-      </div>
+        <!-- Password Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium font-serif text-gray-900"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+          />
+          <!-- Password error messages -->
+          <div
+            *ngIf="
+              signup.get('password')!.invalid && signup.get('password')!.touched
+            "
+            class="text-red-500 text-sm font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="signup.get('password')!.errors?.['required']">
+              Password is required.
+            </span>
+            <span *ngIf="signup.get('password')!.errors?.['minlength']">
+              Password must be at least 8 characters long.
+            </span>
+            <span *ngIf="signup.get('password')!.errors?.['maxlength']">
+              Password cannot exceed 32 characters.
+            </span>
+            <span *ngIf="signup.get('password')!.errors?.['pattern']">
+              Password must contain at least one uppercase letter, one lowercase
+              letter, one digit, and one special character (e.g., &#64;, #, $,
+              etc.).
+            </span>
+          </div>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium font-serif text-gray-900"
+          >
+            Confirm password
+          </label>
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+          />
+          <!-- Confirm Password error messages -->
+          <div
+            *ngIf="
+              signup.get('confirmPassword')!.invalid &&
+              signup.get('confirmPassword')!.touched
+            "
+            class="text-red-500 text-sm font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="signup.get('confirmPassword')!.errors?.['required']">
+              Confirm password is required.
+            </span>
+          </div>
+          <!-- Display password mismatch error -->
+          <div
+            *ngIf="signup.errors?.['passwordMisMatch'] && signup.get('confirmPassword')!.touched"
+            class="font-serif"
+          >
+            Passwords do not match.
+          </div>
+        </div>
+
+        <!-- Server-side Error Message -->
+        <span *ngIf="errorMessage" class="text-red-500 text-sm font-serif">
+          {{ errorMessage }}
+        </span>
+
+        <!-- Create Account Button -->
+        <button
+          type="submit"
+          class="w-full text-white font-serif bg-primary hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        >
+          Create account
+        </button>
+
+        <!-- Login Link -->
+        <p class="text-sm font-light font-serif text-gray-600">
+          Already have an account?
+          <a
+            class="font-medium font-serif text-primary hover:underline cursor-pointer"
+            (click)="navigate()"
+          >
+            SignIn here
+          </a>
+        </p>
+      </form>
     </div>
   </div>
 </div>

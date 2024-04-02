@@ -1,22 +1,78 @@
-<nav class="bg-blue-200">
-  <div class="flex justify-between items-center w-4/5 mx-auto py-3">
-    <div><a routerLink="home">profileXpert</a></div>
-    <ul class="flex justify-around items-center gap-12">
-      <li><a routerLink="home" routerLinkActive="text-blue-600">Home</a></li>
-      <li *ngIf="isLoggedIn">
-        <a routerLink="profile" routerLinkActive="text-blue-600">Profile</a>
-      </li>
-      <li>
-        <a routerLink="signup" routerLinkActive="text-blue-600">SignUp</a>
-      </li>
-      <li *ngIf="!isLoggedIn">
-        <a routerLink="signin" routerLinkActive="text-blue-600">SignIn</a>
-      </li>
-      <li *ngIf="isLoggedIn">
-        <button (click)="logout()">SignOut</button>
-      </li>
+<nav class="shadow-md mb-2">
+  <!-- Navbar container with flex layout and maximum width -->
+  <div class="flex justify-between items-center mx-auto py-3 w-3/4">
+    <!-- Logo -->
+    <div><img [src]="logo" routerLink="home" class="h-10" /></div>
+
+    <!-- Desktop menu (hidden on small screens) -->
+    <ul class="hidden md:flex justify-around items-center gap-6 md:gap-12">
+      <ng-container *ngTemplateOutlet="menuItems"></ng-container>
+    </ul>
+
+    <!-- Mobile menu button (hidden on large screens) -->
+    <div class="md:hidden">
+      <button
+        class="outline-none mobile-menu-button"
+        (click)="toggleMobileMenu()"
+      >
+        <!-- Hamburger icon for mobile menu -->
+        <svg
+          class="w-6 h-6 text-gray-700"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16m-7 6h7"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile menu (hidden by default) -->
+  <div *ngIf="isMobileMenuOpen">
+    <ul class="flex flex-col items-center gap-4 py-2">
+      <ng-container *ngTemplateOutlet="menuItems"></ng-container>
     </ul>
   </div>
+
+  <!-- Template for menu items -->
+  <ng-template #menuItems>
+    <!-- Home -->
+    <li>
+      <a routerLink="home" routerLinkActive="text-blue-500" class="font-serif"
+        >Home</a
+      >
+    </li>
+    <!-- Profile  -->
+    <li *ngIf="isLoggedIn">
+      <a
+        routerLink="profile"
+        routerLinkActive="text-blue-500"
+        class="font-serif"
+        >Profile</a
+      >
+    </li>
+    <!-- SignUp -->
+    <li>
+      <a routerLink="signup" routerLinkActive="text-blue-500" class="font-serif"
+        >SignUp</a
+      >
+    </li>
+    <!-- SignIn  -->
+    <li *ngIf="!isLoggedIn">
+      <a routerLink="signin" routerLinkActive="text-blue-500" class="font-serif"
+        >SignIn</a
+      >
+    </li>
+    <!-- SignOut  -->
+    <li *ngIf="isLoggedIn">
+      <button (click)="logout()" class="font-serif">SignOut</button>
+    </li>
+  </ng-template>
 </nav>
 
 <router-outlet />

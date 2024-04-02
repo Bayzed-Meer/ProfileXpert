@@ -1,107 +1,98 @@
-<div class="bg-gray-50 dark:bg-gray-900">
-  <div
-    class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0"
-  >
-    <!-- Sign In Form Container -->
-    <div
-      class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
-    >
-      <!-- Form Content -->
-      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <!-- Sign In Title -->
-        <h1
-          class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
+<!-- Form Container -->
+<div class="flex flex-col items-center justify-center min-h-[80vh]">
+  <!-- Form Wrapper -->
+  <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md">
+    <!-- Form Content -->
+    <div class="p-6 py-4 md:py-10 md:px-12">
+      <!-- Title -->
+      <h1 class="text-xl text-primary font-bold font-serif mb-6 md:text-2xl">
+        Sign In
+      </h1>
+      <!-- Sign In Form -->
+      <form
+        [formGroup]="signin"
+        (ngSubmit)="onSubmit()"
+        class="space-y-4 md:space-y-6"
+      >
+        <!-- Email Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium font-serif text-gray-900"
+          >
+            Email
+          </label>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="example@example.com"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+          />
+          <!-- Display email error messages -->
+          <div
+            *ngIf="signin.get('email')!.invalid && signin.get('email')!.touched"
+            class="text-red-500 text-sm font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="signin.get('email')!.errors?.['required']">
+              Email is required.
+            </span>
+            <span *ngIf="signin.get('email')!.errors?.['email']">
+              Invalid email format.
+            </span>
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium font-serif text-gray-900"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+          />
+          <!-- Password error messages -->
+          <div
+            *ngIf="
+              signin.get('password')!.invalid && signin.get('password')!.touched
+            "
+            class="text-red-500 text-sm font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="signin.get('password')!.errors?.['required']">
+              Password is required.
+            </span>
+          </div>
+        </div>
+
+        <!-- Server-side Error Message -->
+        <span *ngIf="errorMessage" class="text-red-500 text-sm font-serif">
+          {{ errorMessage }}
+        </span>
+
+        <!-- Sign In Button -->
+        <button
+          type="submit"
+          class="w-full text-white font-serif bg-primary hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
           Sign In
-        </h1>
-        <!-- Sign In Form -->
-        <form
-          [formGroup]="signin"
-          (ngSubmit)="onSubmit()"
-          class="space-y-4 md:space-y-6"
-        >
-          <!-- Email Input -->
-          <div>
-            <label
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="example@example.com"
-              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-            <!-- Email Error Messages -->
-            <div
-              *ngIf="
-                signin.get('email')!.invalid && signin.get('email')!.touched
-              "
-              class="text-red-500 text-sm mt-1"
-            >
-              <!-- Show error message -->
-              <span *ngIf="signin.get('email')!.errors?.['required']">
-                Email is required.
-              </span>
-              <span *ngIf="signin.get('email')!.errors?.['email']">
-                Invalid email format.
-              </span>
-            </div>
-          </div>
-          <!-- Password Input -->
-          <div>
-            <label
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              formControlName="password"
-              placeholder="••••••••"
-              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-            <!-- Password Error Messages -->
-            <div
-              *ngIf="
-                signin.get('password')!.invalid &&
-                signin.get('password')!.touched
-              "
-              class="text-red-500 text-sm mt-1"
-            >
-              <!-- Show error message -->
-              <span *ngIf="signin.get('password')!.errors?.['required']">
-                Password is required.
-              </span>
-            </div>
-          </div>
+        </button>
 
-          <!-- Server-side Error Message -->
-          <span *ngIf="errorMessage" class="text-red-500 text-sm">
-            {{ errorMessage }}
-          </span>
-
-          <!-- Sign In Button -->
-          <button
-            type="submit"
-            class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+        <!-- Sign Up Link -->
+        <p class="text-sm font-light font-serif text-gray-600">
+          Don't have an account?
+          <a
+            class="font-medium font-serif text-primary hover:underline cursor-pointer"
+            (click)="navigate()"
           >
-            Sign In
-          </button>
-
-          <!-- Sign Up Link -->
-          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-            Don't have an account yet?
-            <a
-              class="font-medium text-primary-600 hover:underline dark:text-primary-500 cursor-pointer"
-              (click)="navigate()"
-            >
-              Sign Up here
-            </a>
-          </p>
-        </form>
-      </div>
+            SignUp here
+          </a>
+        </p>
+      </form>
     </div>
   </div>
 </div>

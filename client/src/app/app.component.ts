@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   isLoggedIn: boolean = false;
+  logo: string = './../assets/logo.png';
+  isMobileMenuOpen: boolean = false;
 
   constructor(private authService: AuthService) {}
 
@@ -23,5 +25,9 @@ export class AppComponent {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 }
