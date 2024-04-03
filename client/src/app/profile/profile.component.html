@@ -1,5 +1,5 @@
 <div>
-  <button (click)="toggleDisplay()">Update</button>
+  <button *ngIf="displayProfilePage" (click)="toggleDisplay()">Update</button>
 </div>
 
 <div *ngIf="displayProfilePage">

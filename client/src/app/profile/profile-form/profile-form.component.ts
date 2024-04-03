@@ -74,7 +74,7 @@ export class ProfileFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.profileForm);
+    this.markFormGroupTouched(this.profileForm);
 
     if (this.profileForm.valid) {
       const formData = new FormData();
@@ -139,5 +139,15 @@ export class ProfileFormComponent implements OnInit {
     if (file) {
       this.profileForm.get('profilePicture')!.setValue(file);
     }
+  }
+
+  markFormGroupTouched(formGroup: FormGroup | FormArray) {
+    Object.values(formGroup.controls).forEach((control) => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup || control instanceof FormArray) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 }
