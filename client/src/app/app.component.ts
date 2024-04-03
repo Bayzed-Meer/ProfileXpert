@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from './auth.service';
 import { CommonModule } from '@angular/common';
 
@@ -15,7 +15,7 @@ export class AppComponent {
   logo: string = './../assets/logo.png';
   isMobileMenuOpen: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.authService.isLoggedIn().subscribe((isLoggedIn) => {
@@ -24,6 +24,7 @@ export class AppComponent {
   }
 
   logout(): void {
+    this.router.navigate(['home']);
     this.authService.logout();
   }
 

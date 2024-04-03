@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { UserService } from '../../user.service';
 import { CommonModule } from '@angular/common';
 
@@ -11,6 +11,9 @@ import { CommonModule } from '@angular/common';
 })
 export class ProfilePageComponent {
   userData: any;
+  buttonText: string = 'Create Profile';
+
+  @Output() showForm = new EventEmitter<void>();
 
   constructor(private userService: UserService) {}
 
@@ -18,10 +21,15 @@ export class ProfilePageComponent {
     this.getUserData();
   }
 
+  showProfileForm() {
+    this.showForm.emit();
+  }
+
   getUserData() {
     this.userService.getUserData().subscribe(
       (data: any) => {
         this.userData = data;
+        if (this.userData) this.buttonText = 'Edit Details';
       },
       (error) => {
         console.error('Error fetching user data:', error);

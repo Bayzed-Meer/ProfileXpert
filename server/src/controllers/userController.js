@@ -9,7 +9,9 @@ exports.saveOrUpdateUserData = async (req, res) => {
       userData = new User({
         userId: userId,
         name: req.body.name,
+        designation: req.body.designation,
         age: req.body.age,
+        profileSummary: req.body.profileSummary,
         profilePicture: req.file ? req.file.path : "",
         workExperiences: req.body.workExperiences.map((experience) => ({
           startDate: experience.startDate,
@@ -23,6 +25,8 @@ exports.saveOrUpdateUserData = async (req, res) => {
     } else {
       userData.name = req.body.name;
       userData.age = req.body.age;
+      userData.profileSummary = req.body.profileSummary;
+      userData.designation = req.body.designation;
       userData.profilePicture = req.file
         ? req.file.path
         : userData.profilePicture;
@@ -42,6 +46,8 @@ exports.saveOrUpdateUserData = async (req, res) => {
       .status(200)
       .json({ message: "Profile data saved/updated successfully" });
   } catch (error) {
+    console.log(error);
+
     if (error.name === "ValidationError") {
       let validationErrors = [];
       for (let field in error.errors) {

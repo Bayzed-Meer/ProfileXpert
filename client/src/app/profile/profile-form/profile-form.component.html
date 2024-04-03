@@ -1,4 +1,4 @@
-<div class="flex items-center justify-center min-h-[80vh]">
+<div class="flex items-center justify-center min-h-[80vh] m-12">
   <!-- Profile Form Container -->
   <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md xl:p-0">
     <!-- Form Content -->
@@ -40,6 +40,32 @@
             </span>
           </div>
         </div>
+        <!-- Designation Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          >
+            Designation:
+          </label>
+          <input
+            type="text"
+            formControlName="designation"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+          />
+          <!-- Error message for Designation -->
+          <div
+            *ngIf="
+              profileForm.get('designation')!.touched &&
+              profileForm.get('designation')!.invalid
+            "
+            class="text-red-500 text-sm mt-1 font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="profileForm.get('designation')!.errors?.['required']">
+              Designation is required.
+            </span>
+          </div>
+        </div>
         <!-- Profile Picture Input -->
         <div>
           <label
@@ -62,7 +88,7 @@
             Age:
           </label>
           <input
-            type="text"
+            type="number"
             formControlName="age"
             class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
           />
@@ -79,6 +105,35 @@
             </span>
           </div>
         </div>
+        <!-- Profile Summary Textarea -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          >
+            Profile Summary:
+          </label>
+          <textarea
+            formControlName="profileSummary"
+            rows="5"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+          ></textarea>
+          <!-- Error message for profileSummary -->
+          <div
+            *ngIf="
+              profileForm.get('profileSummary')!.touched &&
+              profileForm.get('profileSummary')!.invalid
+            "
+            class="text-red-500 text-sm mt-1 font-serif"
+          >
+            <!-- Show error message -->
+            <span
+              *ngIf="profileForm.get('profileSummary')!.errors?.['required']"
+            >
+              profileSummary is required.
+            </span>
+          </div>
+        </div>
+
         <!-- Work Experiences Array -->
         <div formArrayName="workExperiences">
           <!-- Loop through each work experience -->
@@ -114,6 +169,7 @@
               <input
                 type="date"
                 formControlName="startDate"
+                [max]="maxDate"
                 class="bg-gray-50 mb-2 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
               />
               <!-- Error message for Start Date -->
@@ -128,8 +184,7 @@
               >
                 <!-- Show error message -->
                 <span
-                  *ngIf="profileForm.get('workExperiences.' + i + '.startDate')!
-                    .errors?.['required']"
+                  *ngIf="profileForm.get('workExperiences.' + i + '.startDate')!.errors?.['required']"
                 >
                   Start Date is required.
                 </span>
@@ -145,9 +200,11 @@
               <input
                 type="date"
                 formControlName="endDate"
+                [max]="maxDate"
                 class="bg-gray-50 mb-2 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
               />
             </div>
+
             <!-- Current Position Checkbox -->
             <div>
               <label
@@ -226,6 +283,7 @@
               </label>
               <textarea
                 formControlName="jobDescription"
+                rows="5"
                 class="bg-gray-50 mb-2 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
               ></textarea>
               <!-- Error message for Job Description -->
@@ -251,7 +309,10 @@
         </div>
 
         <!-- Error message for server-side errors -->
-        <span *ngIf="errorMessage" class="text-red-500 text-sm font-serif">
+        <span
+          *ngIf="errorMessage"
+          class="block text-red-500 text-sm font-serif"
+        >
           {{ errorMessage }}
         </span>
 

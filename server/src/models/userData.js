@@ -11,9 +11,17 @@ const userDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  designation: {
+    type: String,
+    required: true,
+  },
   profilePicture: String,
   age: {
     type: Number,
+    required: true,
+  },
+  profileSummary: {
+    type: String,
     required: true,
   },
   workExperiences: [
@@ -29,7 +37,7 @@ const userDataSchema = new mongoose.Schema({
         },
         validate: {
           validator: function (value) {
-            return !value || value > this.startDate;
+            return !value || value >= this.startDate;
           },
           message: "End date must be after start date",
         },

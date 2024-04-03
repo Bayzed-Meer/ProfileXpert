@@ -16,8 +16,4 @@ export class ProfileComponent {
   toggleDisplay() {
     this.displayProfilePage = !this.displayProfilePage;
   }
-
-  handleFormSubmitted() {
-    this.displayProfilePage = true;
-  }
 }
