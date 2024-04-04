@@ -19,6 +19,12 @@ const userDataSchema = new mongoose.Schema({
   age: {
     type: Number,
     required: true,
+    validate: {
+      validator: function (value) {
+        return value >= 18;
+      },
+      message: "Age must be above or equal 18",
+    },
   },
   profileSummary: {
     type: String,

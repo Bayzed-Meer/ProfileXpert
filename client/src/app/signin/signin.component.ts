@@ -40,7 +40,7 @@ export class SigninComponent {
       this.authService.signin(formData).subscribe({
         next: (response) => {
           console.log('signin successful');
-          this.router.navigate(['home']);
+          this.router.navigate(['profile']);
         },
         error: (err) => {
           this.errorMessage = err.error.message;

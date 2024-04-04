@@ -2,7 +2,7 @@
   <!-- Navbar container with flex layout and maximum width -->
   <div class="flex justify-between items-center mx-auto py-3 w-3/4">
     <!-- Logo -->
-    <div><img [src]="logo" routerLink="home" class="h-10" /></div>
+    <div><img [src]="logo" class="h-10" /></div>
 
     <!-- Desktop menu (hidden on small screens) -->
     <ul class="hidden md:flex justify-around items-center gap-6 md:gap-12">
@@ -41,14 +41,8 @@
 
   <!-- Template for menu items -->
   <ng-template #menuItems>
-    <!-- Home -->
-    <li>
-      <a routerLink="home" routerLinkActive="text-blue-500" class="font-serif"
-        >Home</a
-      >
-    </li>
     <!-- Profile  -->
-    <li *ngIf="isLoggedIn">
+    <li >
       <a
         routerLink="profile"
         routerLinkActive="text-blue-500"
