@@ -22,6 +22,9 @@ app.use("/uploads", express.static("uploads"));
 //routes
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
+app.post("/data", (req, res) => {
+  console.log(req.body);
+});
 
 //connect to mongoDB
 mongoose

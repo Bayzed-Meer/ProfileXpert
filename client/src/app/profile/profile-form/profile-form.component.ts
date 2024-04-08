@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { UserService } from '../../user.service';
+import { IndexedDBService } from '../../indexed-db.service';
 
 @Component({
   selector: 'app-profile-form',
@@ -23,13 +24,13 @@ export class ProfileFormComponent implements OnInit {
 
   @Output() formSubmitted = new EventEmitter<void>();
 
-  constructor(private fb: FormBuilder, private userService: UserService) {}
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService,
+    private indexedDBService: IndexedDBService
+  ) {}
 
   ngOnInit(): void {
-    this.userService.getUserData().subscribe((userData) => {
-      if (userData) this.profileForm = this.setProfileData(userData);
-    });
-
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       designation: ['', Validators.required],
@@ -39,7 +40,25 @@ export class ProfileFormComponent implements OnInit {
       workExperiences: this.fb.array([]),
     });
 
+    this.userService.getUserData().subscribe((userData) => {
+      if (userData) this.profileForm = this.setProfileData(userData);
+    });
+
     this.maxDate = new Date().toISOString().split('T')[0];
+
+    if (navigator.onLine) {
+      this.submitOfflineFormData();
+    }
+
+    window.addEventListener('online', this.checkOnlineStatus.bind(this));
+    window.addEventListener('offline', this.checkOnlineStatus.bind(this));
+  }
+
+  private checkOnlineStatus() {
+    if (navigator.onLine) {
+      this.submitOfflineFormData();
+      window.location.reload();
+    }
   }
 
   get workExperiences(): FormArray {
@@ -146,18 +165,60 @@ export class ProfileFormComponent implements OnInit {
           control.get('jobDescription')!.value
         );
       });
-
-      this.userService.submitProfile(formData).subscribe({
-        next: (response) => {
-          console.log('Profile submitted successfully:', response);
-          this.formSubmitted.emit();
-        },
-        error: (err) => {
-          console.error('Error submitting profile:', err);
-          this.errorMessage = err.error.errors[0];
-        },
-      });
+      if (navigator.onLine) {
+        this.userService.submitProfile(formData).subscribe({
+          next: (response) => {
+            console.log('Profile submitted successfully:', response);
+            this.formSubmitted.emit();
+          },
+          error: (err) => {
+            console.error('Error submitting profile:', err);
+            this.errorMessage = err.error.errors[0];
+          },
+        });
+      } else {
+        const profileData = {
+          name: this.profileForm.get('name')!.value,
+          age: this.profileForm.get('age')!.value,
+          designation: this.profileForm.get('designation')!.value,
+          profileSummary: this.profileForm.get('profileSummary')!.value,
+          profilePicture: this.profileForm.get('profilePicture')!.value,
+          workExperiences: workExperiences.value.map((workExp: any) => ({
+            startDate: workExp.startDate,
+            endDate: workExp.endDate,
+            current: workExp.current,
+            jobTitle: workExp.jobTitle,
+            company: workExp.company,
+            jobDescription: workExp.jobDescription,
+          })),
+        };
+        this.indexedDBService.storeProfileData(profileData);
+        console.log('Profile data stored in IndexedDB');
+        this.formSubmitted.emit();
+      }
     }
+  }
+
+  private submitOfflineFormData() {
+    this.indexedDBService.getStoredProfileData().then((storedProfileData) => {
+      if (storedProfileData && storedProfileData.length > 0) {
+        storedProfileData.forEach((data: any) => {
+          this.userService.submitProfile(data.profileData).subscribe({
+            next: (response) => {
+              console.log('Offline Profile submitted successfully:', response);
+            },
+            error: (err) => {
+              console.error('Error submitting offline profile:', err);
+            },
+          });
+        });
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('online', this.checkOnlineStatus.bind(this));
+    window.removeEventListener('offline', this.checkOnlineStatus.bind(this));
   }
 
   removeWorkExperience(index: number) {
