@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Observable, from, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class IndexedDBService {
   private db: IDBDatabase | undefined;
+  private profileDataSubject = new BehaviorSubject<any[]>([]);
 
   constructor() {
     this.initDatabase();
@@ -19,71 +21,86 @@ export class IndexedDBService {
 
     request.onsuccess = (event) => {
       this.db = request.result;
+      this.fetchAndEmitProfileData();
     };
 
     request.onupgradeneeded = (event) => {
       this.db = (event.target as IDBRequest<IDBDatabase>).result;
-      const store = this.db.createObjectStore('profiles', {
-        autoIncrement: true,
-        keyPath: 'id',
-      });
-      store.createIndex('profileData', 'profileData', { unique: false });
+      this.createProfileDataStore();
     };
   }
 
-  storeProfileData(profileData: any) {
+  private createProfileDataStore() {
     if (!this.db) {
       console.error('IndexedDB is not initialized.');
       return;
     }
+    const store = this.db.createObjectStore('profiles', {
+      autoIncrement: true,
+      keyPath: 'id',
+    });
+    store.createIndex('profileData', 'profileData', { unique: false });
+  }
+
+  private fetchAndEmitProfileData() {
+    if (!this.db) {
+      console.error('IndexedDB is not initialized.');
+      return;
+    }
+    const transaction = this.db.transaction(['profiles'], 'readonly');
+    const store = transaction.objectStore('profiles');
+    const request = store.getAll();
+    request.onsuccess = (event) => {
+      const storedData = request.result;
+      this.profileDataSubject.next(storedData);
+    };
+    request.onerror = (event) => {
+      console.error('Error retrieving profile data:', event);
+    };
+  }
+
+  private executeRequest(request: IDBRequest): Observable<void> {
+    return from(
+      new Promise<void>((resolve, reject) => {
+        request.onsuccess = (event) => {
+          this.fetchAndEmitProfileData();
+          resolve();
+        };
+        request.onerror = (event) => {
+          console.error('Error:', event);
+          reject();
+        };
+      })
+    );
+  }
+
+  storeProfileData(profileData: any): Observable<void> {
+    if (!this.db) {
+      console.error('IndexedDB is not initialized.');
+      return new Observable<void>((observer) => {
+        observer.error('IndexedDB is not initialized.');
+      });
+    }
     const transaction = this.db.transaction(['profiles'], 'readwrite');
     const store = transaction.objectStore('profiles');
-    store.add({ profileData });
+    const request = store.add({ profileData });
+    return this.executeRequest(request);
   }
 
-  async getStoredProfileData(): Promise<any[]> {
-    return new Promise<any[]>((resolve, reject) => {
-      if (!this.db) {
-        console.error('IndexedDB is not initialized.');
-        reject([]);
-      }
-      const transaction = this.db!.transaction(['profiles'], 'readonly');
-      const store = transaction.objectStore('profiles');
-      const request = store.getAll();
-      request.onsuccess = (event) => {
-        const storedData = request.result;
-        this.clearStoredProfileData()
-          .then(() => {
-            console.log('IndexedDB data cleared after retrieval.');
-          })
-          .catch((error) => {
-            console.error('Error clearing IndexedDB:', error);
-          });
-        resolve(storedData);
-      };
-      request.onerror = (event) => {
-        console.error('Error retrieving profile data:', event);
-        reject([]);
-      };
-    });
+  getProfileData(): Observable<any[]> {
+    return this.profileDataSubject.asObservable();
   }
 
-  async clearStoredProfileData(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (!this.db) {
-        console.error('IndexedDB is not initialized.');
-        reject();
-      }
-      const transaction = this.db!.transaction(['profiles'], 'readwrite');
-      const store = transaction.objectStore('profiles');
-      const request = store.clear();
-      request.onsuccess = (event) => {
-        resolve();
-      };
-      request.onerror = (event) => {
-        console.error('Error clearing profile data:', event);
-        reject();
-      };
-    });
+  clearStoredProfileData(): Observable<void> {
+    if (!this.db) {
+      console.error('IndexedDB is not initialized.');
+      return new Observable<void>((observer) => {
+        observer.error('IndexedDB is not initialized.');
+      });
+    }
+    const transaction = this.db.transaction(['profiles'], 'readwrite');
+    const store = transaction.objectStore('profiles');
+    const request = store.clear();
+    return this.executeRequest(request);
   }
 }

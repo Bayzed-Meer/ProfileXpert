@@ -2,7 +2,9 @@
   <!-- Navbar container with flex layout and maximum width -->
   <div class="flex justify-between items-center mx-auto py-3 w-3/4">
     <!-- Logo -->
-    <div><img [src]="logo" class="h-10" /></div>
+    <div>
+      <img [src]="logo" class="h-10 cursor-pointer" routerLink="profile" />
+    </div>
 
     <!-- Desktop menu (hidden on small screens) -->
     <ul class="hidden md:flex justify-around items-center gap-6 md:gap-12">

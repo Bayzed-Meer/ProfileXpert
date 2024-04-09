@@ -200,12 +200,20 @@ export class ProfileFormComponent implements OnInit {
   }
 
   private submitOfflineFormData() {
-    this.indexedDBService.getStoredProfileData().then((storedProfileData) => {
+    this.indexedDBService.getProfileData().subscribe((storedProfileData) => {
       if (storedProfileData && storedProfileData.length > 0) {
         storedProfileData.forEach((data: any) => {
           this.userService.submitProfile(data.profileData).subscribe({
             next: (response) => {
               console.log('Offline Profile submitted successfully:', response);
+              this.indexedDBService.clearStoredProfileData().subscribe({
+                next: () => {
+                  console.log('Offline Profile data cleared after submission.');
+                },
+                error: (err) => {
+                  console.error('Error clearing offline profile data:', err);
+                },
+              });
             },
             error: (err) => {
               console.error('Error submitting offline profile:', err);
