@@ -1,12 +1,13 @@
-const User = require("../models/userData");
+const UserData = require("../models/userData");
+const User = require("../models/user");
 
 exports.saveOrUpdateUserData = async (req, res) => {
   try {
     const { userId } = req.params;
-    let userData = await User.findOne({ userId: userId });
+    let userData = await UserData.findOne({ userId: userId });
 
     if (!userData) {
-      userData = new User({
+      userData = new UserData({
         userId: userId,
         name: req.body.name,
         designation: req.body.designation,
@@ -65,15 +66,38 @@ exports.saveOrUpdateUserData = async (req, res) => {
 exports.getUserData = async (req, res) => {
   try {
     const { userId } = req.params;
-    const userData = await User.findOne({ userId: userId });
+    const userData = await UserData.findOne({ userId: userId });
 
     if (!userData) {
-      return res.status(404).json({ message: "User data not found" });
+      return res.status(204).json({ message: "User data not found" });
     }
 
     res.status(200).json(userData);
   } catch (error) {
     console.error("Error fetching user data:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.shareProfile = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const senderUserId = req.params.userId;
+    const receiver = await User.findOne({ email });
+    if (!receiver) {
+      return res.status(404).json({ message: "Receiver user not found" });
+    }
+    await User.updateOne(
+      { _id: receiver._id },
+      { $addToSet: { sharedWithMe: senderUserId } }
+    );
+    await User.updateOne(
+      { _id: senderUserId },
+      { $addToSet: { whomIShared: receiver._id } }
+    );
+    res.status(200).json({ message: "Profile shared successfully" });
+  } catch (error) {
+    console.error("Error sharing profile:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

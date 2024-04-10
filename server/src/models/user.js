@@ -27,6 +27,16 @@ const userSchema = new mongoose.Schema({
         `${props.value} is not a valid password! Password must be at least 8 characters containing at least one letter, one digit, one special character, and one capital letter`,
     },
   },
+  sharedWithMe: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
+  whomIShared: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {
@@ -42,6 +52,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-const AuthUser = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
-module.exports = AuthUser;
+module.exports = User;
