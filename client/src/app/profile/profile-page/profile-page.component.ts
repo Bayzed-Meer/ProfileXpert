@@ -26,15 +26,15 @@ export class ProfilePageComponent {
   }
 
   getUserData() {
-    this.userService.getUserData().subscribe(
-      (data: any) => {
+    this.userService.getUserData().subscribe({
+      next: (data: any) => {
         this.userData = data;
         if (this.userData) this.buttonText = 'Edit Details';
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching user data:', error);
-      }
-    );
+      },
+    });
   }
   getUserProfilePictureUrl(): string {
     if (this.userData && this.userData.profilePicture) {

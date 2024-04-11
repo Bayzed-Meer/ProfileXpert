@@ -14,12 +14,23 @@ export class UserService {
 
   submitProfile(profileData: FormData): Observable<any> {
     this.getUserId();
-    return this.http.post<any>(`${this.API}/users/${this.userId}`, profileData);
+    return this.http.post<any>(
+      `${this.API}/users/submitProfile/${this.userId}`,
+      profileData
+    );
+  }
+
+  shareProfile(formData: FormData): Observable<any> {
+    this.getUserId();
+    return this.http.post<any>(
+      `${this.API}/users/shareProfile/${this.userId}`,
+      formData
+    );
   }
 
   getUserData(): Observable<any> {
     this.getUserId();
-    return this.http.get<any>(`${this.API}/users/${this.userId}`);
+    return this.http.get<any>(`${this.API}/users/getUserData/${this.userId}`);
   }
 
   private getUserId(): void {

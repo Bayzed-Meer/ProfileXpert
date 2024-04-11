@@ -82,8 +82,10 @@ exports.getUserData = async (req, res) => {
 exports.shareProfile = async (req, res) => {
   try {
     const { email } = req.body;
+
     const senderUserId = req.params.userId;
     const receiver = await User.findOne({ email });
+
     if (!receiver) {
       return res.status(404).json({ message: "Receiver user not found" });
     }
