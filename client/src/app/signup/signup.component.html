@@ -1,11 +1,9 @@
 <!-- Form Container -->
-<div
-  class="flex flex-col items-center justify-center w-3/4 mx-auto min-h-[80vh]"
->
+<div class="flex items-center justify-center w-3/4 mx-auto min-h-[90vh]">
   <!-- Form Wrapper -->
   <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md">
     <!-- Form Content -->
-    <div class="p-6 py-4 md:py-10 md:px-12">
+    <div class="px-6 md:px-12 py-4 md:py-8">
       <!-- Title -->
       <h1 class="text-xl text-primary font-bold font-serif mb-6 md:text-2xl">
         Create an account
@@ -16,6 +14,32 @@
         (ngSubmit)="onSubmit()"
         class="space-y-4 md:space-y-6"
       >
+        <!-- Username Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium font-serif text-gray-900"
+          >
+            Username
+          </label>
+          <input
+            type="text"
+            formControlName="username"
+            placeholder="John Cena"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg block w-full p-2.5"
+          />
+          <!-- Display email error messages -->
+          <div
+            *ngIf="
+              signup.get('username')!.invalid && signup.get('username')!.touched
+            "
+            class="text-red-500 text-sm font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="signup.get('username')!.errors?.['required']">
+              username is required.
+            </span>
+          </div>
+        </div>
         <!-- Email Input -->
         <div>
           <label
@@ -111,7 +135,7 @@
           <!-- Display password mismatch error -->
           <div
             *ngIf="signup.errors?.['passwordMisMatch'] && signup.get('confirmPassword')!.touched"
-            class="font-serif"
+            class="text-red-500 text-sm font-serif"
           >
             Passwords do not match.
           </div>

@@ -32,5 +32,6 @@ router.post(
 );
 
 router.get("/getUserData/:userId", userController.getUserData);
+router.get("/getSharedUser/:userId", userController.getSharedUser);
 
 module.exports = router;

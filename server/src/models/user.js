@@ -3,6 +3,10 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -29,12 +33,11 @@ const userSchema = new mongoose.Schema({
   },
   sharedWithMe: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-    },
-  ],
-  whomIShared: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
+      _id: false,
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+      username: String,
     },
   ],
 });

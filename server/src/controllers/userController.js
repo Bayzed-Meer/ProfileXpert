@@ -82,24 +82,63 @@ exports.getUserData = async (req, res) => {
 exports.shareProfile = async (req, res) => {
   try {
     const { email } = req.body;
+    const senderId = req.params.userId;
 
-    const senderUserId = req.params.userId;
     const receiver = await User.findOne({ email });
 
     if (!receiver) {
       return res.status(404).json({ message: "Receiver user not found" });
     }
+
+    const sender = await User.findById(senderId);
+
+    if (!sender) {
+      return res.status(404).json({ message: "Sender user not found" });
+    }
+
+    if (receiver.email === sender.email) {
+      return res
+        .status(400)
+        .json({ message: "You cannot share your profile with yourself" });
+    }
+
     await User.updateOne(
       { _id: receiver._id },
-      { $addToSet: { sharedWithMe: senderUserId } }
+      {
+        $addToSet: {
+          sharedWithMe: {
+            userId: senderId,
+            username: sender.username,
+          },
+        },
+      }
     );
-    await User.updateOne(
-      { _id: senderUserId },
-      { $addToSet: { whomIShared: receiver._id } }
-    );
+
     res.status(200).json({ message: "Profile shared successfully" });
   } catch (error) {
     console.error("Error sharing profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getSharedUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const sharedUser = user.sharedWithMe.map((sharedUser) => ({
+      userId: sharedUser.userId,
+      username: sharedUser.username,
+    }));
+
+    return res.status(200).json(sharedUser);
+  } catch (error) {
+    console.error("Error fetching shared user data:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

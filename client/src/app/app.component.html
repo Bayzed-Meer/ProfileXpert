@@ -53,12 +53,12 @@
       >
     </li>
     <!-- Shared Profile  -->
-    <li>
+    <li *ngIf="isLoggedIn">
       <a
         routerLink="shared-profile"
         routerLinkActive="text-blue-500"
         class="font-serif"
-        >Shared Profile</a
+        >Share Profile</a
       >
     </li>
     <!-- SignUp -->

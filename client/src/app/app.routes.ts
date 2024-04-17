@@ -4,6 +4,7 @@ import { SignupComponent } from './signup/signup.component';
 import { SigninComponent } from './signin/signin.component';
 import { ProfileComponent } from './profile/profile.component';
 import { Component } from '@angular/core';
+import { ShowProfileComponent } from './show-profile/show-profile.component';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,7 @@ export const routes: Routes = [
         (m) => m.SharedProfileComponent
       ),
   },
+  { path: 'viewProfile/:userId', component: ShowProfileComponent },
   {
     path: 'signup',
     component: SignupComponent,

@@ -1,4 +1,4 @@
-<div *ngIf="userData" class="px-4 shadow-md my-8">
+<div class="w-3/4 mx-auto px-4 shadow-md my-8">
   <div
     class="flex flex-col md:flex-row items-start md:items-center justify-between py-4"
   >
@@ -22,15 +22,6 @@
       <p class="text-gray-600 text-justify pr-2 my-4 font-serif text-base">
         {{ userData?.profileSummary }}
       </p>
-
-      <!-- Edit Details Button -->
-      <button
-        *ngIf="userData"
-        (click)="showProfileForm()"
-        class="text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 font-serif"
-      >
-        Edit Details
-      </button>
     </div>
   </div>
 
@@ -58,17 +49,4 @@
       </div>
     </ng-container>
   </div>
-</div>
-
-<!-- Display message and button if userData is not available -->
-<div *ngIf="!userData" class="flex items-center justify-around mt-8 py-4">
-  <div class="font-medium text-lg md:text-xl font-serif sm:text-base">
-    Please create your profile
-  </div>
-  <button
-    (click)="showProfileForm()"
-    class="text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 font-serif"
-  >
-    {{ buttonText }}
-  </button>
 </div>

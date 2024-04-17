@@ -28,9 +28,15 @@ export class UserService {
     );
   }
 
-  getUserData(): Observable<any> {
+  getUserData(userId?: string): Observable<any> {
     this.getUserId();
-    return this.http.get<any>(`${this.API}/users/getUserData/${this.userId}`);
+    const finalId = userId || this.userId;
+    return this.http.get<any>(`${this.API}/users/getUserData/${finalId}`);
+  }
+
+  getSharedUser(): Observable<any> {
+    this.getUserId();
+    return this.http.get<any>(`${this.API}/users/getSharedUser/${this.userId}`);
   }
 
   private getUserId(): void {
