@@ -31,7 +31,13 @@ router.post(
   userController.saveOrUpdateUserData
 );
 
+router.post(
+  "/deleteWorkExperience/:userId",
+  userController.deleteWorkExperience
+);
+
 router.get("/getUserData/:userId", userController.getUserData);
+router.get("/getWorkExperience/:userId/:id", userController.getWorkExperience);
 router.get("/getSharedUser/:userId", userController.getSharedUser);
 
 module.exports = router;

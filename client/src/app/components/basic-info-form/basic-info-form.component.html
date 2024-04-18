@@ -1,0 +1,155 @@
+<div class="flex items-center justify-center min-h-[80vh] m-12">
+  <!-- Profile Form Container -->
+  <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md xl:p-0">
+    <!-- Form Content -->
+    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+      <!-- Profile Title -->
+      <h1 class="text-xl text-primary font-bold font-serif mb-6 md:text-2xl">
+        Profile Information
+      </h1>
+      <!-- Profile Form -->
+      <form
+        [formGroup]="profileForm"
+        (ngSubmit)="onSubmit()"
+        enctype="multipart/form-data"
+        class="space-y-4"
+      >
+        <!-- Name Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          >
+            Name
+          </label>
+          <input
+            type="text"
+            formControlName="name"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+          />
+          <!-- Error message for Name -->
+          <div
+            *ngIf="
+              profileForm.get('name')!.touched &&
+              profileForm.get('name')!.invalid
+            "
+            class="text-red-500 text-sm mt-1 font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="profileForm.get('name')!.errors?.['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+        <!-- Designation Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          >
+            Designation
+          </label>
+          <input
+            type="text"
+            formControlName="designation"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+          />
+          <!-- Error message for Designation -->
+          <div
+            *ngIf="
+              profileForm.get('designation')!.touched &&
+              profileForm.get('designation')!.invalid
+            "
+            class="text-red-500 text-sm mt-1 font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="profileForm.get('designation')!.errors?.['required']">
+              Designation is required.
+            </span>
+          </div>
+        </div>
+        <!-- Profile Picture Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          >
+            Profile Picture
+          </label>
+          <input
+            type="file"
+            (change)="onProfilePictureSelected($event)"
+            accept="image/*"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+          />
+        </div>
+        <!-- Age Input -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          >
+            Age
+          </label>
+          <input
+            type="number"
+            formControlName="age"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+          />
+          <!-- Error message for Age -->
+          <div
+            *ngIf="
+              profileForm.get('age')!.touched && profileForm.get('age')!.invalid
+            "
+            class="text-red-500 text-sm mt-1 font-serif"
+          >
+            <!-- Show error message -->
+            <span *ngIf="profileForm.get('age')!.errors?.['required']">
+              Age is required.
+            </span>
+          </div>
+        </div>
+        <!-- Profile Summary Textarea -->
+        <div>
+          <label
+            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          >
+            Profile Summary
+          </label>
+          <textarea
+            formControlName="profileSummary"
+            rows="5"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+          ></textarea>
+          <!-- Error message for profileSummary -->
+          <div
+            *ngIf="
+              profileForm.get('profileSummary')!.touched &&
+              profileForm.get('profileSummary')!.invalid
+            "
+            class="text-red-500 text-sm mt-1 font-serif"
+          >
+            <!-- Show error message -->
+            <span
+              *ngIf="profileForm.get('profileSummary')!.errors?.['required']"
+            >
+              Profile Summary is required.
+            </span>
+          </div>
+        </div>
+
+        <!-- Error message for server-side errors -->
+        <span
+          *ngIf="errorMessage"
+          class="block text-red-500 text-sm font-serif"
+        >
+          {{ errorMessage }}
+        </span>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="w-full text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 font-serif"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

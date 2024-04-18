@@ -7,27 +7,28 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { UserService } from '../../user.service';
-import { IndexedDBService } from '../../indexed-db.service';
+import { UserService } from '../../services/user.service';
+import { IndexedDBService } from '../../services/indexed-db.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-profile-form',
-  templateUrl: './profile-form.component.html',
+  selector: 'app-basic-info-form',
+  templateUrl: './basic-info-form.component.html',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  styleUrls: ['./profile-form.component.scss'],
+  styleUrls: ['./basic-info-form.component.scss'],
 })
-export class ProfileFormComponent implements OnInit {
+export class BasicInfoFormComponent implements OnInit {
   profileForm!: FormGroup;
   errorMessage: string = '';
-  maxDate: string = '';
 
   @Output() formSubmitted = new EventEmitter<void>();
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private indexedDBService: IndexedDBService
+    private indexedDBService: IndexedDBService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -37,14 +38,11 @@ export class ProfileFormComponent implements OnInit {
       profilePicture: [null],
       age: ['', Validators.required],
       profileSummary: ['', Validators.required],
-      workExperiences: this.fb.array([]),
     });
 
     this.userService.getUserData().subscribe((userData) => {
       if (userData) this.profileForm = this.setProfileData(userData);
     });
-
-    this.maxDate = new Date().toISOString().split('T')[0];
 
     if (navigator.onLine) {
       this.submitOfflineFormData();
@@ -61,18 +59,6 @@ export class ProfileFormComponent implements OnInit {
     }
   }
 
-  get workExperiences(): FormArray {
-    return this.profileForm.get('workExperiences') as FormArray;
-  }
-
-  formatDate(dateString: string | null): string | null {
-    if (!dateString) {
-      return null;
-    }
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
-  }
-
   setProfileData(userData: any): FormGroup {
     return this.fb.group({
       name: [userData.name],
@@ -80,47 +66,12 @@ export class ProfileFormComponent implements OnInit {
       designation: [userData.designation],
       profilePicture: [userData.profilePicture],
       profileSummary: [userData.profileSummary],
-
-      workExperiences: this.fb.array(
-        userData.workExperiences.map((workExp: any) => {
-          return this.fb.group({
-            startDate: [this.formatDate(workExp.startDate)],
-            endDate: [this.formatDate(workExp.endDate)],
-            current: [workExp.current],
-            jobTitle: [workExp.jobTitle],
-            company: [workExp.company],
-            jobDescription: [workExp.jobDescription],
-          });
-        })
-      ),
     });
   }
-
-  addWorkExperience() {
-    const newWorkExperience = this.fb.group({
-      startDate: ['', Validators.required],
-      endDate: [''],
-      current: [false],
-      jobTitle: ['', Validators.required],
-      company: ['', Validators.required],
-      jobDescription: ['', Validators.required],
-    });
-    this.workExperiences.push(newWorkExperience);
-  }
-
   onSubmit() {
     this.markFormGroupTouched(this.profileForm);
 
     if (this.profileForm.valid) {
-      const workExperiences = this.profileForm.get(
-        'workExperiences'
-      ) as FormArray;
-
-      if (workExperiences.length === 0) {
-        this.errorMessage = 'At least one work experience should be added.';
-        return;
-      }
-
       const formData = new FormData();
 
       formData.append('name', this.profileForm.get('name')!.value);
@@ -139,37 +90,11 @@ export class ProfileFormComponent implements OnInit {
         formData.append('profilePicture', profilePicture);
       }
 
-      workExperiences.controls.forEach((control, index) => {
-        formData.append(
-          `workExperiences[${index}][startDate]`,
-          control.get('startDate')!.value
-        );
-        formData.append(
-          `workExperiences[${index}][endDate]`,
-          control.get('current')!.value ? '' : control.get('endDate')!.value
-        );
-        formData.append(
-          `workExperiences[${index}][current]`,
-          control.get('current')!.value ? 'true' : 'false'
-        );
-        formData.append(
-          `workExperiences[${index}][jobTitle]`,
-          control.get('jobTitle')!.value
-        );
-        formData.append(
-          `workExperiences[${index}][company]`,
-          control.get('company')!.value
-        );
-        formData.append(
-          `workExperiences[${index}][jobDescription]`,
-          control.get('jobDescription')!.value
-        );
-      });
       if (navigator.onLine) {
         this.userService.submitProfile(formData).subscribe({
           next: (response) => {
             console.log('Profile submitted successfully:', response);
-            this.formSubmitted.emit();
+            this.router.navigate(['profile']);
           },
           error: (err) => {
             console.error('Error submitting profile:', err);
@@ -183,18 +108,10 @@ export class ProfileFormComponent implements OnInit {
           designation: this.profileForm.get('designation')!.value,
           profileSummary: this.profileForm.get('profileSummary')!.value,
           profilePicture: this.profileForm.get('profilePicture')!.value,
-          workExperiences: workExperiences.value.map((workExp: any) => ({
-            startDate: workExp.startDate,
-            endDate: workExp.endDate,
-            current: workExp.current,
-            jobTitle: workExp.jobTitle,
-            company: workExp.company,
-            jobDescription: workExp.jobDescription,
-          })),
         };
         this.indexedDBService.storeProfileData(profileData);
         console.log('Profile data stored in IndexedDB');
-        this.formSubmitted.emit();
+        this.router.navigate(['profile']);
       }
     }
   }
@@ -227,10 +144,6 @@ export class ProfileFormComponent implements OnInit {
   ngOnDestroy() {
     window.removeEventListener('online', this.checkOnlineStatus.bind(this));
     window.removeEventListener('offline', this.checkOnlineStatus.bind(this));
-  }
-
-  removeWorkExperience(index: number) {
-    this.workExperiences.removeAt(index);
   }
 
   onProfilePictureSelected(event: any) {

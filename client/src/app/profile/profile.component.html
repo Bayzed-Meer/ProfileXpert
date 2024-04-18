@@ -1,9 +1,0 @@
-<div class="w-3/4 mx-auto">
-  <div *ngIf="displayProfilePage">
-    <app-profile-page (showForm)="toggleDisplay()"></app-profile-page>
-  </div>
-
-  <div *ngIf="!displayProfilePage">
-    <app-profile-form (formSubmitted)="toggleDisplay()"></app-profile-form>
-  </div>
-</div>

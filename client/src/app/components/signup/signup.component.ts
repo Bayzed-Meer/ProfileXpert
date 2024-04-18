@@ -7,8 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../auth.service';
-import { passwordMatchValidator } from '../custom-validators';
+import { AuthService } from '../../services/auth.service';
+import { passwordMatchValidator } from '../../custom-validators/custom-validators';
 
 @Component({
   selector: 'app-signup',

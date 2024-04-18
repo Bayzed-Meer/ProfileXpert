@@ -14,31 +14,31 @@ exports.saveOrUpdateUserData = async (req, res) => {
         age: req.body.age,
         profileSummary: req.body.profileSummary,
         profilePicture: req.file ? req.file.path : "",
-        workExperiences: req.body.workExperiences.map((experience) => ({
-          startDate: experience.startDate,
-          endDate: experience.endDate,
-          current: experience.current,
-          jobTitle: experience.jobTitle,
-          company: experience.company,
-          jobDescription: experience.jobDescription,
-        })),
+        workExperiences: [],
       });
     } else {
-      userData.name = req.body.name;
-      userData.age = req.body.age;
-      userData.profileSummary = req.body.profileSummary;
-      userData.designation = req.body.designation;
+      userData.name = req.body.name ? req.body.name : userData.name;
+      userData.age = req.body.age ? req.body.age : userData.age;
+      userData.profileSummary = req.body.profileSummary
+        ? req.body.profileSummary
+        : userData.profileSummary;
+      userData.designation = req.body.designation
+        ? req.body.designation
+        : userData.designation;
       userData.profilePicture = req.file
         ? req.file.path
         : userData.profilePicture;
-      userData.workExperiences = req.body.workExperiences.map((experience) => ({
-        startDate: experience.startDate,
-        endDate: experience.endDate,
-        current: experience.current,
-        jobTitle: experience.jobTitle,
-        company: experience.company,
-        jobDescription: experience.jobDescription,
-      }));
+
+      if (req.body.startDate) {
+        userData.workExperiences.push({
+          startDate: req.body.startDate,
+          endDate: req.body.endDate,
+          current: req.body.current,
+          jobTitle: req.body.jobTitle,
+          company: req.body.company,
+          jobDescription: req.body.jobDescription,
+        });
+      }
     }
 
     await userData.save();
@@ -75,6 +75,52 @@ exports.getUserData = async (req, res) => {
     res.status(200).json(userData);
   } catch (error) {
     console.error("Error fetching user data:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getSharedUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const sharedUser = user.sharedWithMe.map((sharedUser) => ({
+      userId: sharedUser.userId,
+      username: sharedUser.username,
+    }));
+
+    return res.status(200).json(sharedUser);
+  } catch (error) {
+    console.error("Error fetching shared user data:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getWorkExperience = async (req, res) => {
+  try {
+    const { userId, id } = req.params;
+    const userData = await UserData.findOne({ userId: userId });
+
+    if (!userData) {
+      return res.status(404).json({ message: "User data not found" });
+    }
+
+    const workExperience = userData.workExperiences.find(
+      (exp) => exp._id.toString() === id
+    );
+
+    if (!workExperience) {
+      return res.status(404).json({ message: "Work experience not found" });
+    }
+
+    res.status(200).json(workExperience);
+  } catch (error) {
+    console.error("Error fetching work experience data:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -121,24 +167,32 @@ exports.shareProfile = async (req, res) => {
   }
 };
 
-exports.getSharedUser = async (req, res) => {
+exports.deleteWorkExperience = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { id } = req.body;
 
-    const user = await User.findOne({ _id: userId });
+    const userData = await UserData.findOne({ userId: userId });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (!userData) {
+      return res.status(404).json({ message: "User data not found" });
     }
 
-    const sharedUser = user.sharedWithMe.map((sharedUser) => ({
-      userId: sharedUser.userId,
-      username: sharedUser.username,
-    }));
+    const index = userData.workExperiences.findIndex(
+      (exp) => exp._id.toString() === id
+    );
 
-    return res.status(200).json(sharedUser);
+    if (index === -1) {
+      return res.status(404).json({ message: "Work experience not found" });
+    }
+
+    userData.workExperiences.splice(index, 1);
+
+    await userData.save();
+
+    res.status(200).json({ message: "Work experience deleted successfully" });
   } catch (error) {
-    console.error("Error fetching shared user data:", error);
+    console.error("Error deleting work experience:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

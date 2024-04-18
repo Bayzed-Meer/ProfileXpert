@@ -34,6 +34,21 @@ export class UserService {
     return this.http.get<any>(`${this.API}/users/getUserData/${finalId}`);
   }
 
+  getWorkExperience(id: string): Observable<any> {
+    this.getUserId();
+    return this.http.get<any>(
+      `${this.API}/users/getWorkExperience/${this.userId}/${id}`
+    );
+  }
+
+  deleteWorkExperience(id: string): Observable<any> {
+    this.getUserId();
+    return this.http.post<any>(
+      `${this.API}/users/deleteWorkExperience/${this.userId}`,
+      { id: id }
+    );
+  }
+
   getSharedUser(): Observable<any> {
     this.getUserId();
     return this.http.get<any>(`${this.API}/users/getSharedUser/${this.userId}`);

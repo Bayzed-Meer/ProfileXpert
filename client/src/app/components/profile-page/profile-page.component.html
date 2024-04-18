@@ -1,4 +1,4 @@
-<div *ngIf="userData" class="px-4 shadow-md my-8">
+<div *ngIf="userData" class="px-4 shadow-md my-8 flex flex-col w-3/4 mx-auto">
   <div
     class="flex flex-col md:flex-row items-start md:items-center justify-between py-4"
   >
@@ -22,29 +22,54 @@
       <p class="text-gray-600 text-justify pr-2 my-4 font-serif text-base">
         {{ userData?.profileSummary }}
       </p>
-
-      <!-- Edit Details Button -->
-      <button
-        *ngIf="userData"
-        (click)="showProfileForm()"
-        class="text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 font-serif"
-      >
-        Edit Details
-      </button>
+      <div class="flex items-center gap-4">
+        <button
+          routerLink="basic-info-form"
+          class="text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 font-serif"
+        >
+          Edit Basic Info
+        </button>
+        <button
+          type="button"
+          routerLink="work-experience-form"
+          class="text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 font-serif"
+        >
+          Add Work Experience
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Work Experiences -->
   <div class="grid grid-cols-1 gap-4 pb-4">
     <!-- Work Experience Items -->
-    <ng-container *ngIf="userData && userData.workExperiences">
+    <ng-container
+      *ngIf="
+        userData.workExperiences && userData.workExperiences.length > 0;
+        else noWorkExperiences
+      "
+    >
       <div
         *ngFor="let experience of userData.workExperiences"
         class="border rounded-lg p-4 bg-first"
       >
-        <h3 class="text-lg font-bold text-primary mb-2 font-serif">
-          {{ experience.jobTitle }}
-        </h3>
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-bold text-primary mb-2 font-serif">
+            {{ experience.jobTitle }}
+          </h3>
+          <div class="flex items-center justify-center gap-4 pr-4">
+            <i
+              class="material-icons text-blue-600 cursor-pointer"
+              (click)="editWorkExp(experience._id)"
+              >edit</i
+            >
+            <i
+              class="material-icons text-red-600 cursor-pointer"
+              (click)="deleteWorkExp(experience._id)"
+              >delete</i
+            >
+          </div>
+        </div>
         <p class="text-sm font-semibold text-gray-700 mb-2 font-serif">
           {{ experience.company }}
         </p>
@@ -57,18 +82,28 @@
         </p>
       </div>
     </ng-container>
+    <ng-template #noWorkExperiences>
+      <div
+        class="text-gray-600 font-serif flex justify-evenly text-lg bg-first p-4"
+      >
+        No work experience yet!
+      </div>
+    </ng-template>
   </div>
 </div>
 
 <!-- Display message and button if userData is not available -->
-<div *ngIf="!userData" class="flex items-center justify-around mt-8 py-4">
+<div
+  *ngIf="!userData"
+  class="flex items-center justify-around mt-8 py-4 bg-first w-3/4 mx-auto"
+>
   <div class="font-medium text-lg md:text-xl font-serif sm:text-base">
     Please create your profile
   </div>
   <button
-    (click)="showProfileForm()"
+    (click)="openForm()"
     class="text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 font-serif"
   >
-    {{ buttonText }}
+    Create Profile
   </button>
 </div>
