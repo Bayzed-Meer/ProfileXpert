@@ -12,11 +12,25 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  submitProfile(profileData: FormData): Observable<any> {
+  createProfile(formData: FormData): Observable<any> {
     this.getUserId();
     return this.http.post<any>(
-      `${this.API}/users/submitProfile/${this.userId}`,
-      profileData
+      `${this.API}/users/createProfile/${this.userId}`,
+      formData
+    );
+  }
+
+  getProfile(userId?: string): Observable<any> {
+    this.getUserId();
+    const finalId = userId || this.userId;
+    return this.http.get<any>(`${this.API}/users/getProfile/${finalId}`);
+  }
+
+  updateProfile(formData: FormData): Observable<any> {
+    this.getUserId();
+    return this.http.patch<any>(
+      `${this.API}/users/updateProfile/${this.userId}`,
+      formData
     );
   }
 
@@ -28,10 +42,17 @@ export class UserService {
     );
   }
 
-  getUserData(userId?: string): Observable<any> {
+  getSharedUser(): Observable<any> {
     this.getUserId();
-    const finalId = userId || this.userId;
-    return this.http.get<any>(`${this.API}/users/getUserData/${finalId}`);
+    return this.http.get<any>(`${this.API}/users/getSharedUser/${this.userId}`);
+  }
+
+  addWorkExperience(formData: FormData): Observable<any> {
+    this.getUserId();
+    return this.http.post<any>(
+      `${this.API}/users/addWorkExperience/${this.userId}`,
+      formData
+    );
   }
 
   getWorkExperience(id: string): Observable<any> {
@@ -41,17 +62,19 @@ export class UserService {
     );
   }
 
-  deleteWorkExperience(id: string): Observable<any> {
+  updateWorkExperience(formData: FormData, id: string): Observable<any> {
     this.getUserId();
-    return this.http.post<any>(
-      `${this.API}/users/deleteWorkExperience/${this.userId}`,
-      { id: id }
+    return this.http.patch<any>(
+      `${this.API}/users/updateWorkExperience/${this.userId}/${id}`,
+      formData
     );
   }
 
-  getSharedUser(): Observable<any> {
+  deleteWorkExperience(id: string): Observable<any> {
     this.getUserId();
-    return this.http.get<any>(`${this.API}/users/getSharedUser/${this.userId}`);
+    return this.http.delete<any>(
+      `${this.API}/users/deleteWorkExperience/${this.userId}/${id}`
+    );
   }
 
   private getUserId(): void {

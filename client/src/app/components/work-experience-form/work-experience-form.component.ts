@@ -18,10 +18,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./work-experience-form.component.scss'],
 })
 export class WorkExperienceFormComponent implements OnInit {
-  workExperienceForm!: FormGroup;
-  maxDate: string = '';
   @Input() id!: string;
-  workExperience: WorkExperience | undefined;
+  maxDate: string = '';
+  workExperienceForm!: FormGroup;
+  workExperience!: WorkExperience;
 
   constructor(
     private fb: FormBuilder,
@@ -30,6 +30,12 @@ export class WorkExperienceFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.initializeMaxDate();
+    if (this.id) this.fetchWorkExperienceData();
+  }
+
+  initializeForm(): void {
     this.workExperienceForm = this.fb.group({
       startDate: [null, Validators.required],
       endDate: [null],
@@ -38,30 +44,13 @@ export class WorkExperienceFormComponent implements OnInit {
       company: ['', Validators.required],
       jobDescription: ['', Validators.required],
     });
-    if (this.id) {
-      this.userService.getWorkExperience(this.id).subscribe({
-        next: (response) => {
-          this.workExperience = response;
-          this.workExperienceForm = this.setFormValues(this.workExperience);
-        },
-        error: (error) => {
-          console.error('Error fetching work experience', error);
-        },
-      });
-    }
+  }
 
+  initializeMaxDate(): void {
     this.maxDate = new Date().toISOString().split('T')[0];
   }
 
-  formatDate(dateString: string | null): string | null {
-    if (!dateString) {
-      return null;
-    }
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
-  }
-
-  setFormValues(workExp: any): FormGroup {
+  fillworkExperienceForm(workExp: any): FormGroup {
     return this.fb.group({
       startDate: [this.formatDate(workExp.startDate)],
       endDate: [this.formatDate(workExp.endDate)],
@@ -70,6 +59,28 @@ export class WorkExperienceFormComponent implements OnInit {
       company: [workExp.company],
       jobDescription: [workExp.jobDescription],
     });
+  }
+
+  fetchWorkExperienceData(): void {
+    this.userService.getWorkExperience(this.id).subscribe({
+      next: (response) => {
+        this.workExperience = response;
+        this.workExperienceForm = this.fillworkExperienceForm(
+          this.workExperience
+        );
+      },
+      error: (err) => {
+        console.error('Error fetching work experience', err);
+      },
+    });
+  }
+
+  formatDate(dateString: string | null): string | null {
+    if (!dateString) {
+      return null;
+    }
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
   }
 
   toggleCurrent(): void {
@@ -82,20 +93,34 @@ export class WorkExperienceFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.markFormGroupTouched(this.workExperienceForm);
+
     if (this.workExperienceForm.valid) {
       const formData = this.workExperienceForm.value;
-      this.userService.submitProfile(formData).subscribe({
-        next: (response) => {
-          console.log('Work experience added successfully', response);
-          this.workExperienceForm.reset();
-          this.router.navigate(['profile']);
-        },
-        error: (error) => {
-          console.error('Error adding work experience', error);
-        },
-      });
-    } else {
-      this.markFormGroupTouched(this.workExperienceForm);
+
+      if (!this.id) {
+        this.userService.addWorkExperience(formData).subscribe({
+          next: (response) => {
+            console.log('Work experience added successfully', response);
+            this.workExperienceForm.reset();
+            this.router.navigate(['profile']);
+          },
+          error: (err) => {
+            console.error('Error adding work experience', err);
+          },
+        });
+      } else {
+        this.userService.updateWorkExperience(formData, this.id).subscribe({
+          next: (response) => {
+            console.log('Work experience added successfully', response);
+            this.workExperienceForm.reset();
+            this.router.navigate(['profile']);
+          },
+          error: (err) => {
+            console.error('Error adding work experience', err);
+          },
+        });
+      }
     }
   }
 

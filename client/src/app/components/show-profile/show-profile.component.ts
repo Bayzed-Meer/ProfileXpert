@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import { profile } from '../../models/profile.model';
 
 @Component({
   selector: 'app-show-profile',
@@ -11,7 +12,7 @@ import { UserService } from '../../services/user.service';
 })
 export class ShowProfileComponent {
   @Input() userId!: string;
-  userData: any;
+  userData!: profile;
 
   constructor(private userService: UserService) {}
 
@@ -20,8 +21,8 @@ export class ShowProfileComponent {
   }
 
   getUserData(userId: string) {
-    this.userService.getUserData(userId).subscribe({
-      next: (data: any) => {
+    this.userService.getProfile(userId).subscribe({
+      next: (data) => {
         this.userData = data;
       },
       error: (error) => {

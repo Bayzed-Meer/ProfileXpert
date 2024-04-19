@@ -103,6 +103,9 @@
             <span *ngIf="profileForm.get('age')!.errors?.['required']">
               Age is required.
             </span>
+            <span *ngIf="profileForm.get('age')!.errors?.['invalidAge']">
+              Age must be above or equal 18.
+            </span>
           </div>
         </div>
         <!-- Profile Summary Textarea -->
@@ -133,14 +136,6 @@
             </span>
           </div>
         </div>
-
-        <!-- Error message for server-side errors -->
-        <span
-          *ngIf="errorMessage"
-          class="block text-red-500 text-sm font-serif"
-        >
-          {{ errorMessage }}
-        </span>
 
         <!-- Submit Button -->
         <button

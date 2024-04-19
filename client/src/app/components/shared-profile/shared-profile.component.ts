@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
   templateUrl: './shared-profile.component.html',
   styleUrl: './shared-profile.component.scss',
 })
-export class SharedProfileComponent {
+export class SharedProfileComponent implements OnInit {
   shareForm!: FormGroup;
   sharedUser: any[] = [];
   errorMessage!: string;
@@ -28,17 +28,24 @@ export class SharedProfileComponent {
   ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.fetchSharedUserData();
+  }
+
+  initializeForm(): void {
     this.shareForm = this.fb.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],
     });
+  }
 
+  fetchSharedUserData(): void {
     this.userService.getSharedUser().subscribe({
       next: (response) => {
+        console.log('Shared User Data fetching successful', response);
         this.sharedUser = response;
-        console.log('Shared User Data fetching successful', this.sharedUser);
       },
-      error: (error) => {
-        console.log('Error fetching shared UserData', error);
+      error: (err) => {
+        console.log('Error fetching shared UserData', err);
       },
     });
   }
@@ -56,9 +63,9 @@ export class SharedProfileComponent {
           this.shareForm.reset();
           window.alert('Profile shared successfully');
         },
-        error: (error) => {
-          this.errorMessage = error.error.message;
-          console.log('Error sharing profile', error);
+        error: (err) => {
+          this.errorMessage = err.error.message;
+          console.log('Error sharing profile', err);
         },
       });
     }

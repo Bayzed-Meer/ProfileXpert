@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -10,6 +10,8 @@ import {
 import { UserService } from '../../services/user.service';
 import { IndexedDBService } from '../../services/indexed-db.service';
 import { Router } from '@angular/router';
+import { ageValidator } from '../../custom-validators/age-validator';
+import { BasicInfo } from '../../models/Basic-Info.model';
 
 @Component({
   selector: 'app-basic-info-form',
@@ -20,9 +22,8 @@ import { Router } from '@angular/router';
 })
 export class BasicInfoFormComponent implements OnInit {
   profileForm!: FormGroup;
-  errorMessage: string = '';
-
-  @Output() formSubmitted = new EventEmitter<void>();
+  profileData!: BasicInfo;
+  newUser: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -32,18 +33,42 @@ export class BasicInfoFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+    this.fetchProfileData();
+    this.setupOfflineFormSubmissionListeners();
+  }
+
+  initializeForm(): void {
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       designation: ['', Validators.required],
       profilePicture: [null],
-      age: ['', Validators.required],
+      age: ['', [Validators.required, ageValidator()]],
       profileSummary: ['', Validators.required],
     });
+  }
 
-    this.userService.getUserData().subscribe((userData) => {
-      if (userData) this.profileForm = this.setProfileData(userData);
+  fetchProfileData(): void {
+    this.userService.getProfile().subscribe((response) => {
+      if (response) {
+        this.profileData = response;
+        this.profileForm = this.fillProfileForm(this.profileData);
+        this.newUser = false;
+      }
     });
+  }
 
+  fillProfileForm(userData: any): FormGroup {
+    return this.fb.group({
+      name: [userData.name],
+      age: [userData.age],
+      designation: [userData.designation],
+      profilePicture: [userData.profilePicture],
+      profileSummary: [userData.profileSummary],
+    });
+  }
+
+  setupOfflineFormSubmissionListeners(): void {
     if (navigator.onLine) {
       this.submitOfflineFormData();
     }
@@ -59,15 +84,6 @@ export class BasicInfoFormComponent implements OnInit {
     }
   }
 
-  setProfileData(userData: any): FormGroup {
-    return this.fb.group({
-      name: [userData.name],
-      age: [userData.age],
-      designation: [userData.designation],
-      profilePicture: [userData.profilePicture],
-      profileSummary: [userData.profileSummary],
-    });
-  }
   onSubmit() {
     this.markFormGroupTouched(this.profileForm);
 
@@ -91,16 +107,27 @@ export class BasicInfoFormComponent implements OnInit {
       }
 
       if (navigator.onLine) {
-        this.userService.submitProfile(formData).subscribe({
-          next: (response) => {
-            console.log('Profile submitted successfully:', response);
-            this.router.navigate(['profile']);
-          },
-          error: (err) => {
-            console.error('Error submitting profile:', err);
-            this.errorMessage = err.error.errors[0];
-          },
-        });
+        if (this.newUser) {
+          this.userService.createProfile(formData).subscribe({
+            next: (response) => {
+              console.log('Profile created successfully:', response);
+              this.router.navigate(['profile']);
+            },
+            error: (err) => {
+              console.error('Error creating profile:', err);
+            },
+          });
+        } else {
+          this.userService.updateProfile(formData).subscribe({
+            next: (response) => {
+              console.log('Profile updated successfully:', response);
+              this.router.navigate(['profile']);
+            },
+            error: (err) => {
+              console.error('Error updating profile:', err);
+            },
+          });
+        }
       } else {
         const profileData = {
           name: this.profileForm.get('name')!.value,
@@ -120,22 +147,41 @@ export class BasicInfoFormComponent implements OnInit {
     this.indexedDBService.getProfileData().subscribe((storedProfileData) => {
       if (storedProfileData && storedProfileData.length > 0) {
         storedProfileData.forEach((data: any) => {
-          this.userService.submitProfile(data.profileData).subscribe({
-            next: (response) => {
-              console.log('Offline Profile submitted successfully:', response);
-              this.indexedDBService.clearStoredProfileData().subscribe({
-                next: () => {
-                  console.log('Offline Profile data cleared after submission.');
-                },
-                error: (err) => {
-                  console.error('Error clearing offline profile data:', err);
-                },
-              });
-            },
-            error: (err) => {
-              console.error('Error submitting offline profile:', err);
-            },
-          });
+          if (this.newUser) {
+            this.userService.createProfile(data.profileData).subscribe({
+              next: (response) => {
+                console.log('Offline Profile created successfully:', response);
+                this.indexedDBService.clearStoredProfileData().subscribe({
+                  next: () => {
+                    console.log('Offline Profile data cleared after creation.');
+                  },
+                  error: (err) => {
+                    console.error('Error clearing offline profile data:', err);
+                  },
+                });
+              },
+              error: (err) => {
+                console.error('Error creating offline profile:', err);
+              },
+            });
+          } else {
+            this.userService.updateProfile(data.profileData).subscribe({
+              next: (response) => {
+                console.log('Offline Profile updated successfully:', response);
+                this.indexedDBService.clearStoredProfileData().subscribe({
+                  next: () => {
+                    console.log('Offline Profile data cleared after update.');
+                  },
+                  error: (err) => {
+                    console.error('Error clearing offline profile data:', err);
+                  },
+                });
+              },
+              error: (err) => {
+                console.error('Error updating offline profile:', err);
+              },
+            });
+          }
         });
       }
     });

@@ -26,6 +26,10 @@ export class SigninComponent {
   ) {}
 
   ngOnInit() {
+    this.initializeForm();
+  }
+
+  initializeForm(): void {
     this.signin = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -39,7 +43,7 @@ export class SigninComponent {
 
       this.authService.signin(formData).subscribe({
         next: (response) => {
-          console.log('signin successful');
+          console.log('signin successful', response);
           this.router.navigate(['profile']);
         },
         error: (err) => {

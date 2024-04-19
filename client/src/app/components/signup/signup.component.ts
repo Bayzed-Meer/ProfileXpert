@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { passwordMatchValidator } from '../../custom-validators/custom-validators';
+import { passwordMatchValidator } from '../../custom-validators/password-match-validator';
 
 @Component({
   selector: 'app-signup',
@@ -28,6 +28,10 @@ export class SignupComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initializeForm();
+  }
+
+  initializeForm(): void {
     this.signup = this.formBuilder.group(
       {
         username: ['', Validators.required],
@@ -53,7 +57,7 @@ export class SignupComponent implements OnInit {
         ],
       },
       {
-        validators: passwordMatchValidator,
+        validators: passwordMatchValidator(),
       }
     );
   }
@@ -67,7 +71,7 @@ export class SignupComponent implements OnInit {
 
       this.authService.signup(formData).subscribe({
         next: (response) => {
-          console.log('signup successful');
+          console.log('signup successful', response);
           this.router.navigate(['profile']);
         },
         error: (err) => {

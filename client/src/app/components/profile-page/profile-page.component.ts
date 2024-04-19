@@ -3,6 +3,7 @@ import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { profile } from '../../models/profile.model';
 
 @Component({
   selector: 'app-profile-page',
@@ -12,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './profile-page.component.scss',
 })
 export class ProfilePageComponent {
-  userData: any;
+  userData!: profile;
   isLoggedIn!: boolean;
 
   constructor(
@@ -22,26 +23,27 @@ export class ProfilePageComponent {
   ) {}
 
   ngOnInit(): void {
+    this.checkLoggedInStatus();
+  }
+
+  checkLoggedInStatus(): void {
     this.authService.isLoggedIn().subscribe((isLoggedIn) => {
       this.isLoggedIn = isLoggedIn;
+      if (this.isLoggedIn) {
+        this.getUserData();
+      }
     });
-    if (this.isLoggedIn) this.getUserData();
   }
 
   getUserData() {
-    this.userService.getUserData().subscribe({
-      next: (data: any) => {
-        this.userData = data;
+    this.userService.getProfile().subscribe({
+      next: (response) => {
+        this.userData = response;
       },
-      error: (error) => {
-        console.error('Error fetching user data:', error);
+      error: (err) => {
+        console.error('Error fetching user data:', err);
       },
     });
-  }
-
-  openForm(): void {
-    if (this.isLoggedIn) this.router.navigate(['basic-info-form']);
-    else this.router.navigate(['signin']);
   }
 
   editWorkExp(id: string): void {
@@ -60,6 +62,11 @@ export class ProfilePageComponent {
         console.log('Error deleting work experience', err);
       },
     });
+  }
+
+  openForm(): void {
+    if (this.isLoggedIn) this.router.navigate(['profile/basic-info-form']);
+    else this.router.navigate(['signin']);
   }
 
   getUserProfilePictureUrl(): string {

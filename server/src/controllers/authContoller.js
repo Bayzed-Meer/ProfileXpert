@@ -7,6 +7,7 @@ exports.signup = async (req, res) => {
     const { username, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -41,6 +42,7 @@ exports.signin = async (req, res) => {
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
+
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
