@@ -2,24 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-
-interface AuthResponse {
-  message: string;
-  token: string;
-}
+import { AuthResponse } from '../models/auth-response.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private API: string = 'http://localhost:3000';
+  // private API: string = 'http://localhost:3000';
+  private API: string = 'https://profilexpert.onrender.com';
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {
     this.checkTokenValidity();
   }
 
-  signup(formData: FormData): Observable<any> {
+  signup(formData: FormData): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.API}/auth/signup`, formData)
       .pipe(
@@ -30,7 +27,7 @@ export class AuthService {
       );
   }
 
-  signin(formData: FormData): Observable<any> {
+  signin(formData: FormData): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.API}/auth/signin`, formData)
       .pipe(

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { profile } from '../../models/profile.model';
+import { Profile } from '../../models/profile.model';
 
 @Component({
   selector: 'app-show-profile',
@@ -12,7 +12,7 @@ import { profile } from '../../models/profile.model';
 })
 export class ShowProfileComponent {
   @Input() userId!: string;
-  userData!: profile;
+  userData!: Profile;
 
   constructor(private userService: UserService) {}
 
@@ -33,7 +33,8 @@ export class ShowProfileComponent {
 
   getUserProfilePictureUrl(): string {
     if (this.userData && this.userData.profilePicture) {
-      return `http://localhost:3000/${this.userData.profilePicture}`;
+      // return `http://localhost:3000/${this.userData.profilePicture}`;
+      return `https://profilexpert.onrender.com/${this.userData.profilePicture}`;
     }
     return '';
   }

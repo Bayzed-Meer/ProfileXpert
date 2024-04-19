@@ -3,7 +3,7 @@ import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { profile } from '../../models/profile.model';
+import { Profile } from '../../models/profile.model';
 
 @Component({
   selector: 'app-profile-page',
@@ -13,7 +13,7 @@ import { profile } from '../../models/profile.model';
   styleUrl: './profile-page.component.scss',
 })
 export class ProfilePageComponent {
-  userData!: profile;
+  userData!: Profile;
   isLoggedIn!: boolean;
 
   constructor(
@@ -71,7 +71,8 @@ export class ProfilePageComponent {
 
   getUserProfilePictureUrl(): string {
     if (this.userData && this.userData.profilePicture) {
-      return `http://localhost:3000/${this.userData.profilePicture}`;
+      // return `http://localhost:3000/${this.userData.profilePicture}`;
+      return `https://profilexpert.onrender.com/${this.userData.profilePicture}`;
     }
     return '';
   }

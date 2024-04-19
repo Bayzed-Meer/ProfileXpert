@@ -8,6 +8,7 @@ import {
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { SharedUser } from '../../models/shared-user.model';
 
 @Component({
   selector: 'app-shared-profile',

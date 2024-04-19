@@ -1,6 +1,6 @@
 import { WorkExperience } from './work-experience.model';
 
-export interface profile {
+export interface Profile {
   _id: string;
   userId: string;
   name: string;
