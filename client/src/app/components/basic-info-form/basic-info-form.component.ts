@@ -11,7 +11,7 @@ import { UserService } from '../../services/user.service';
 import { IndexedDBService } from '../../services/indexed-db.service';
 import { Router } from '@angular/router';
 import { ageValidator } from '../../custom-validators/age-validator';
-import { BasicInfo } from '../../models/Basic-Info.model';
+import { BasicInfo } from '../../models/basic-Info.model';
 
 @Component({
   selector: 'app-basic-info-form',

@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const multer = require("multer");
 const path = require("path");
+const authenticateToken = require("../middlewares/authenticateToken");
 
 // Multer storage configuration for handling file uploads
 const storage = multer.diskStorage({
@@ -21,32 +22,49 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Profile routes
-router.get("/getProfile/:userId", userController.getProfile);
+router.get("/getProfile", authenticateToken, userController.getProfile);
 router.post(
-  "/createProfile/:userId",
+  "/createProfile",
+  authenticateToken,
   upload.single("profilePicture"),
   userController.createProfile
 );
 router.patch(
-  "/updateProfile/:userId",
+  "/updateProfile",
+  authenticateToken,
   upload.single("profilePicture"),
   userController.updateProfile
 );
 
 // Work experience routes
-router.get("/getWorkExperience/:userId/:id", userController.getWorkExperience);
-router.post("/addWorkExperience/:userId", userController.addWorkExperience);
+router.get(
+  "/getWorkExperience/:id",
+  authenticateToken,
+  userController.getWorkExperience
+);
+router.post(
+  "/addWorkExperience",
+  authenticateToken,
+  userController.addWorkExperience
+);
 router.patch(
-  "/updateWorkExperience/:userId/:id",
+  "/updateWorkExperience/:id",
+  authenticateToken,
   userController.updateWorkExperience
 );
 router.delete(
-  "/deleteWorkExperience/:userId/:id",
+  "/deleteWorkExperience/:id",
+  authenticateToken,
   userController.deleteWorkExperience
 );
 
 // Sharing profile route
-router.get("/getSharedUser/:userId", userController.getSharedUser);
-router.post("/shareProfile/:userId", userController.shareProfile);
+router.get("/getSharedUser", authenticateToken, userController.getSharedUser);
+router.get(
+  "/getSharedUserData/:userId",
+  authenticateToken,
+  userController.getSharedUserData
+);
+router.post("/shareProfile", authenticateToken, userController.shareProfile);
 
 module.exports = router;

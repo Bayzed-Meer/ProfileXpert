@@ -3,7 +3,7 @@ const User = require("../models/user");
 
 exports.getProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.user;
 
     const userData = await UserData.findOne({ userId: userId });
 
@@ -20,7 +20,7 @@ exports.getProfile = async (req, res) => {
 
 exports.createProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.user;
     const { name, designation, age, profileSummary } = req.body;
 
     const userData = new UserData({
@@ -52,7 +52,8 @@ exports.createProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.user;
+
     const { name, designation, age, profileSummary } = req.body;
 
     const userData = await UserData.findOne({ userId });
@@ -92,7 +93,7 @@ exports.updateProfile = async (req, res) => {
 exports.shareProfile = async (req, res) => {
   try {
     const { email } = req.body;
-    const senderId = req.params.userId;
+    const senderId = req.user.userId;
 
     const receiver = await User.findOne({ email });
 
@@ -133,7 +134,7 @@ exports.shareProfile = async (req, res) => {
 
 exports.getSharedUser = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.user;
 
     const user = await User.findOne({ _id: userId });
 
@@ -153,9 +154,27 @@ exports.getSharedUser = async (req, res) => {
   }
 };
 
+exports.getSharedUserData = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const userData = await UserData.findOne({ userId: userId });
+
+    if (!userData) {
+      return res.status(204).json({ message: "User data not found" });
+    }
+
+    res.status(200).json(userData);
+  } catch (error) {
+    console.error("Error fetching shared user data:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 exports.getWorkExperience = async (req, res) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
+    const { userId } = req.user;
 
     const userData = await UserData.findOne({ userId: userId });
 
@@ -180,7 +199,7 @@ exports.getWorkExperience = async (req, res) => {
 
 exports.addWorkExperience = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.user;
     const { startDate, endDate, current, jobTitle, company, jobDescription } =
       req.body;
 
@@ -210,7 +229,8 @@ exports.addWorkExperience = async (req, res) => {
 
 exports.updateWorkExperience = async (req, res) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
+    const { userId } = req.user;
     const { startDate, endDate, current, jobTitle, company, jobDescription } =
       req.body;
 
@@ -246,7 +266,8 @@ exports.updateWorkExperience = async (req, res) => {
 
 exports.deleteWorkExperience = async (req, res) => {
   try {
-    const { userId, id } = req.params;
+    const { id } = req.params;
+    const { userId } = req.user;
 
     const userData = await UserData.findOne({ userId: userId });
 

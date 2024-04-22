@@ -21,9 +21,10 @@ export class ShowProfileComponent {
   }
 
   getUserData(userId: string) {
-    this.userService.getProfile(userId).subscribe({
+    this.userService.getSharedUserData(userId).subscribe({
       next: (data) => {
         this.userData = data;
+        console.log(data);
       },
       error: (error) => {
         console.error('Error fetching user data:', error);
@@ -33,8 +34,8 @@ export class ShowProfileComponent {
 
   getUserProfilePictureUrl(): string {
     if (this.userData && this.userData.profilePicture) {
-      // return `http://localhost:3000/${this.userData.profilePicture}`;
-      return `https://profilexpert.onrender.com/${this.userData.profilePicture}`;
+      return `http://localhost:3000/${this.userData.profilePicture}`;
+      // return `https://profilexpert.onrender.com/${this.userData.profilePicture}`;
     }
     return '';
   }

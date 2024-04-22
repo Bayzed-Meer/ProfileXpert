@@ -6,6 +6,8 @@ import { ShowProfileComponent } from './components/show-profile/show-profile.com
 import { BasicInfoFormComponent } from './components/basic-info-form/basic-info-form.component';
 import { WorkExperienceFormComponent } from './components/work-experience-form/work-experience-form.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
+import { inject } from '@angular/core';
+import { AuthService } from './services/auth.service';
 
 export const routes: Routes = [
   {
@@ -23,6 +25,7 @@ export const routes: Routes = [
       import('./components/shared-profile/shared-profile.component').then(
         (m) => m.SharedProfileComponent
       ),
+    canActivate: [() => inject(AuthService).isLoggedIn()],
   },
   { path: 'viewProfile/:userId', component: ShowProfileComponent },
   {
