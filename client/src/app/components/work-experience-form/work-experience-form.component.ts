@@ -22,6 +22,7 @@ export class WorkExperienceFormComponent implements OnInit {
   maxDate: string = '';
   workExperienceForm!: FormGroup;
   workExperience!: WorkExperience;
+  title: string = 'Add Work Experience';
 
   constructor(
     private fb: FormBuilder,
@@ -32,7 +33,10 @@ export class WorkExperienceFormComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
     this.initializeMaxDate();
-    if (this.id) this.fetchWorkExperienceData();
+    if (this.id) {
+      this.fetchWorkExperienceData();
+      this.title = 'Update Work Experience';
+    }
   }
 
   initializeForm(): void {

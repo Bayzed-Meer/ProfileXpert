@@ -49,33 +49,45 @@
         routerLink="profile"
         routerLinkActive="text-blue-500"
         class="font-serif"
+        (click)="closeMobileMenu()"
         >My Profile</a
       >
     </li>
     <!-- Shared Profile  -->
-    <li>
+    <li *ngIf="isLoggedIn">
       <a
         routerLink="shared-profile"
         routerLinkActive="text-blue-500"
         class="font-serif"
+        (click)="closeMobileMenu()"
         >Share Profile</a
       >
     </li>
     <!-- SignUp -->
     <li>
-      <a routerLink="signup" routerLinkActive="text-blue-500" class="font-serif"
+      <a
+        routerLink="signup"
+        routerLinkActive="text-blue-500"
+        class="font-serif"
+        (click)="closeMobileMenu()"
         >SignUp</a
       >
     </li>
     <!-- SignIn  -->
     <li *ngIf="!isLoggedIn">
-      <a routerLink="signin" routerLinkActive="text-blue-500" class="font-serif"
+      <a
+        routerLink="signin"
+        routerLinkActive="text-blue-500"
+        class="font-serif"
+        (click)="closeMobileMenu()"
         >SignIn</a
       >
     </li>
     <!-- SignOut  -->
     <li *ngIf="isLoggedIn">
-      <button (click)="logout()" class="font-serif">SignOut</button>
+      <button (click)="logout()" class="font-serif" (click)="closeMobileMenu()">
+        SignOut
+      </button>
     </li>
   </ng-template>
 </nav>

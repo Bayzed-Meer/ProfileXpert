@@ -1,38 +1,32 @@
-<!-- Form Container -->
-<div class="flex items-center justify-center w-3/4 mx-auto min-h-[80vh]">
-  <!-- Form Wrapper -->
-  <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md">
-    <!-- Form Content -->
-    <div class="px-6 md:px-12 py-4 md:py-8">
+<div class="flex justify-center w-3/4 mx-auto mt-24 md:mt-36">
+  <div class="bg-first rounded-md shadow-md w-full sm:max-w-md">
+    <div class="p-8 md:p-12">
       <!-- Title -->
-      <h1 class="text-xl text-primary font-bold font-serif mb-6 md:text-2xl">
+      <h1
+        class="text-primary font-semibold font-serif text-xl md:text-2xl mb-4 md:mb-6"
+      >
         Sign In
       </h1>
       <!-- Sign In Form -->
-      <form
-        [formGroup]="signin"
-        (ngSubmit)="onSubmit()"
-        class="space-y-4 md:space-y-6"
-      >
+      <form [formGroup]="signin" (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Email Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium font-serif text-gray-900"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Email
           </label>
           <input
             type="email"
             formControlName="email"
-            placeholder="example@example.com"
-            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg block w-full p-2.5"
+            placeholder="example@gmail.com"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Display email error messages -->
           <div
             *ngIf="signin.get('email')!.invalid && signin.get('email')!.touched"
-            class="text-red-500 text-sm font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
-            <!-- Show error message -->
             <span *ngIf="signin.get('email')!.errors?.['required']">
               Email is required.
             </span>
@@ -45,7 +39,7 @@
         <!-- Password Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium font-serif text-gray-900"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Password
           </label>
@@ -53,16 +47,15 @@
             type="password"
             formControlName="password"
             placeholder="••••••••"
-            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif sm:text-sm rounded-lg block w-full p-2.5"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Password error messages -->
           <div
             *ngIf="
               signin.get('password')!.invalid && signin.get('password')!.touched
             "
-            class="text-red-500 text-sm font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
-            <!-- Show error message -->
             <span *ngIf="signin.get('password')!.errors?.['required']">
               Password is required.
             </span>
@@ -70,29 +63,33 @@
         </div>
 
         <!-- Server-side Error Message -->
-        <span *ngIf="errorMessage" class="text-red-500 text-sm font-serif">
+        <span
+          *ngIf="errorMessage"
+          class="text-red-500 text-xs md:text-sm font-serif mt-1"
+        >
           {{ errorMessage }}
         </span>
 
         <!-- Sign In Button -->
         <button
           type="submit"
-          class="w-full text-white font-serif bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          class="w-full text-white font-serif bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs md:text-sm p-2 md:p-2.5 text-center"
         >
           Sign In
         </button>
-
-        <!-- Sign Up Link -->
-        <p class="text-sm font-light font-serif text-gray-600">
-          Don't have an account?
-          <a
-            class="font-medium font-serif text-primary hover:underline cursor-pointer"
-            (click)="navigate()"
-          >
-            SignUp here
-          </a>
-        </p>
       </form>
+      <!-- Sign Up Link -->
+      <p
+        class="text-xs md:text-sm font-light font-serif text-gray-600 mt-2 md:mt-4"
+      >
+        Don't have an account?
+        <a
+          class="font-medium font-serif text-primary hover:underline cursor-pointer"
+          (click)="navigate()"
+        >
+          Sign Up
+        </a>
+      </p>
     </div>
   </div>
 </div>

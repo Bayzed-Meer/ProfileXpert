@@ -1,11 +1,11 @@
-<div class="flex items-center justify-center min-h-[80vh] m-12">
-  <!-- Work Experience Form Container -->
-  <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md xl:p-0">
-    <!-- Form Content -->
-    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+<div class="flex justify-center w-3/4 mx-auto mt-8 md:mt-16">
+  <div class="w-full bg-first rounded-md shadow-md sm:max-w-md">
+    <div class="p-8 md:p-12">
       <!-- Form Title -->
-      <h1 class="text-xl text-primary font-bold font-serif mb-6 md:text-2xl">
-        Work Experience Information
+      <h1
+        class="text-primary font-semibold font-serif text-xl md:text-2xl mb-4 md:mb-6"
+      >
+        {{ title }}
       </h1>
       <!-- Work Experience Form -->
       <form
@@ -15,14 +15,15 @@
       >
         <!-- Start Date Input -->
         <div>
-          <label class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          <label
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
             >Start Date</label
           >
           <input
             type="date"
             formControlName="startDate"
             [max]="maxDate"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Error message for Start Date -->
           <div
@@ -30,7 +31,7 @@
               workExperienceForm.get('startDate')!.touched &&
               workExperienceForm.get('startDate')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
             <span
               *ngIf="workExperienceForm.get('startDate')!.errors?.['required']"
@@ -40,7 +41,8 @@
         </div>
         <!-- End Date Input (if not current position) -->
         <div *ngIf="!workExperienceForm.get('current')!.value">
-          <label class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+          <label
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
             >End Date</label
           >
           <input
@@ -48,7 +50,7 @@
             formControlName="endDate"
             [max]="maxDate"
             [min]="workExperienceForm.get('startDate')!.value"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Error message for End Date -->
           <div
@@ -56,7 +58,7 @@
               workExperienceForm.get('endDate')!.touched &&
               workExperienceForm.get('endDate')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
             <span
               *ngIf="workExperienceForm.get('endDate')!.errors?.['required']"
@@ -80,14 +82,14 @@
         <!-- Job Title Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Job Title
           </label>
           <input
             type="text"
             formControlName="jobTitle"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Error message for Job Title -->
           <div
@@ -95,7 +97,7 @@
               workExperienceForm.get('jobTitle')!.touched &&
               workExperienceForm.get('jobTitle')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
             <span
               *ngIf="workExperienceForm.get('jobTitle')!.errors?.['required']"
@@ -106,14 +108,14 @@
         <!-- Company Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Company
           </label>
           <input
             type="text"
             formControlName="company"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Error message for Company -->
           <div
@@ -121,7 +123,7 @@
               workExperienceForm.get('company')!.touched &&
               workExperienceForm.get('company')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
             <span
               *ngIf="workExperienceForm.get('company')!.errors?.['required']"
@@ -132,14 +134,14 @@
         <!-- Job Description Textarea -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Job Description
           </label>
           <textarea
             formControlName="jobDescription"
             rows="5"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           ></textarea>
           <!-- Error message for Job Description -->
           <div
@@ -147,7 +149,7 @@
               workExperienceForm.get('jobDescription')!.touched &&
               workExperienceForm.get('jobDescription')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
             <span
               *ngIf="workExperienceForm.get('jobDescription')!.errors?.['required']"
@@ -159,7 +161,7 @@
         <!-- Submit Button -->
         <button
           type="submit"
-          class="w-full text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 font-serif"
+          class="w-full text-white font-serif bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs md:text-sm p-2 md:p-2.5 text-center"
         >
           Submit
         </button>

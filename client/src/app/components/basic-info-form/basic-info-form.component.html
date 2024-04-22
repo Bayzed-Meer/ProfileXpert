@@ -1,10 +1,10 @@
-<div class="flex items-center justify-center min-h-[80vh] m-12">
-  <!-- Profile Form Container -->
-  <div class="w-full bg-first rounded-lg shadow-md sm:max-w-md xl:p-0">
-    <!-- Form Content -->
-    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+<div class="flex justify-center w-3/4 mx-auto mt-8 md:mt-16">
+  <div class="w-full bg-first rounded-md shadow-md sm:max-w-md">
+    <div class="p-8 md:p-12">
       <!-- Profile Title -->
-      <h1 class="text-xl text-primary font-bold font-serif mb-6 md:text-2xl">
+      <h1
+        class="text-primary font-semibold font-serif text-xl md:text-2xl mb-4 md:mb-6"
+      >
         Profile Information
       </h1>
       <!-- Profile Form -->
@@ -17,14 +17,14 @@
         <!-- Name Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Name
           </label>
           <input
             type="text"
             formControlName="name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Error message for Name -->
           <div
@@ -32,9 +32,8 @@
               profileForm.get('name')!.touched &&
               profileForm.get('name')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
-            <!-- Show error message -->
             <span *ngIf="profileForm.get('name')!.errors?.['required']">
               Name is required.
             </span>
@@ -43,14 +42,14 @@
         <!-- Designation Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Designation
           </label>
           <input
             type="text"
             formControlName="designation"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Error message for Designation -->
           <div
@@ -58,9 +57,8 @@
               profileForm.get('designation')!.touched &&
               profileForm.get('designation')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
-            <!-- Show error message -->
             <span *ngIf="profileForm.get('designation')!.errors?.['required']">
               Designation is required.
             </span>
@@ -69,7 +67,7 @@
         <!-- Profile Picture Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Profile Picture
           </label>
@@ -77,29 +75,28 @@
             type="file"
             (change)="onProfilePictureSelected($event)"
             accept="image/*"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
         </div>
         <!-- Age Input -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Age
           </label>
           <input
             type="number"
             formControlName="age"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           />
           <!-- Error message for Age -->
           <div
             *ngIf="
               profileForm.get('age')!.touched && profileForm.get('age')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
-            <!-- Show error message -->
             <span *ngIf="profileForm.get('age')!.errors?.['required']">
               Age is required.
             </span>
@@ -111,14 +108,14 @@
         <!-- Profile Summary Textarea -->
         <div>
           <label
-            class="block mb-2 text-sm font-medium text-gray-900 font-serif"
+            class="block mb-2 text-xs md:text-sm font-medium font-serif text-gray-900"
           >
             Profile Summary
           </label>
           <textarea
             formControlName="profileSummary"
             rows="5"
-            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 font-serif"
+            class="bg-gray-50 border border-gray-300 text-gray-900 font-serif text-xs md:text-sm rounded-md block w-full p-2 md:p-2.5"
           ></textarea>
           <!-- Error message for profileSummary -->
           <div
@@ -126,9 +123,8 @@
               profileForm.get('profileSummary')!.touched &&
               profileForm.get('profileSummary')!.invalid
             "
-            class="text-red-500 text-sm mt-1 font-serif"
+            class="text-red-500 text-xs md:text-sm font-serif mt-1"
           >
-            <!-- Show error message -->
             <span
               *ngIf="profileForm.get('profileSummary')!.errors?.['required']"
             >
@@ -140,7 +136,7 @@
         <!-- Submit Button -->
         <button
           type="submit"
-          class="w-full text-white bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 font-serif"
+          class="w-full text-white font-serif bg-primary hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs md:text-sm p-2 md:p-2.5 text-center"
         >
           Submit
         </button>
