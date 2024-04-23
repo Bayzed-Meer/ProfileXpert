@@ -15,6 +15,7 @@ import { Profile } from '../../models/profile.model';
 export class ProfilePageComponent {
   userData!: Profile;
   isLoggedIn!: boolean;
+  loading: boolean = true;
 
   constructor(
     private userService: UserService,
@@ -31,17 +32,19 @@ export class ProfilePageComponent {
       this.isLoggedIn = isLoggedIn;
       if (this.isLoggedIn) {
         this.getUserData();
-      }
+      } else this.loading = false;
     });
   }
 
   getUserData() {
     this.userService.getProfile().subscribe({
       next: (response) => {
+        this.loading = false;
         this.userData = response;
       },
       error: (err) => {
         console.error('Error fetching user data:', err);
+        this.loading = false;
       },
     });
   }
@@ -51,17 +54,23 @@ export class ProfilePageComponent {
   }
 
   deleteWorkExp(id: string): void {
-    this.userService.deleteWorkExperience(id).subscribe({
-      next: (response) => {
-        console.log('Work experience deleted', response);
-        this.userData.workExperiences = this.userData.workExperiences.filter(
-          (experience: any) => experience._id !== id
-        );
-      },
-      error: (err) => {
-        console.log('Error deleting work experience', err);
-      },
-    });
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this work experience?'
+    );
+
+    if (confirmed) {
+      this.userService.deleteWorkExperience(id).subscribe({
+        next: (response) => {
+          console.log('Work experience deleted', response);
+          this.userData.workExperiences = this.userData.workExperiences.filter(
+            (experience: any) => experience._id !== id
+          );
+        },
+        error: (err) => {
+          console.log('Error deleting work experience', err);
+        },
+      });
+    }
   }
 
   openForm(): void {

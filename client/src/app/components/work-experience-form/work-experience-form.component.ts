@@ -22,6 +22,7 @@ export class WorkExperienceFormComponent implements OnInit {
   maxDate: string = '';
   workExperienceForm!: FormGroup;
   workExperience!: WorkExperience;
+  loading: boolean = false;
   title: string = 'Add Work Experience';
 
   constructor(
@@ -101,16 +102,19 @@ export class WorkExperienceFormComponent implements OnInit {
 
     if (this.workExperienceForm.valid) {
       const formData = this.workExperienceForm.value;
+      this.loading = true;
 
       if (!this.id) {
         this.userService.addWorkExperience(formData).subscribe({
           next: (response) => {
             console.log('Work experience added successfully', response);
             this.workExperienceForm.reset();
+            this.loading = false;
             this.router.navigate(['profile']);
           },
           error: (err) => {
             console.error('Error adding work experience', err);
+            this.loading = false;
           },
         });
       } else {
@@ -118,10 +122,12 @@ export class WorkExperienceFormComponent implements OnInit {
           next: (response) => {
             console.log('Work experience added successfully', response);
             this.workExperienceForm.reset();
+            this.loading = false;
             this.router.navigate(['profile']);
           },
           error: (err) => {
             console.error('Error adding work experience', err);
+            this.loading = false;
           },
         });
       }

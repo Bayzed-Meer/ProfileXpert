@@ -13,6 +13,7 @@ import { Profile } from '../../models/profile.model';
 export class ShowProfileComponent {
   @Input() userId!: string;
   userData!: Profile;
+  loading: boolean = true;
 
   constructor(private userService: UserService) {}
 
@@ -24,9 +25,10 @@ export class ShowProfileComponent {
     this.userService.getSharedUserData(userId).subscribe({
       next: (data) => {
         this.userData = data;
-        console.log(data);
+        this.loading = false;
       },
       error: (error) => {
+        this.loading = false;
         console.error('Error fetching user data:', error);
       },
     });

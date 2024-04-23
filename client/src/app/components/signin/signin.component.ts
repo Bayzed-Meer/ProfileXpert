@@ -19,6 +19,8 @@ import { CommonModule } from '@angular/common';
 export class SigninComponent {
   signin!: FormGroup;
   errorMessage: string = '';
+  loading: boolean = false;
+
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -41,14 +43,18 @@ export class SigninComponent {
     if (this.signin.valid) {
       const formData = { ...this.signin.value };
 
+      this.loading = true;
+
       this.authService.signin(formData).subscribe({
         next: (response) => {
           console.log('signin successful', response);
+          this.loading = false;
           this.router.navigate(['profile']);
         },
         error: (err) => {
           this.errorMessage = err.error.message;
           console.error('signin failed:', err);
+          this.loading = false;
         },
       });
     }

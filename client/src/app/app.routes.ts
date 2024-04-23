@@ -8,6 +8,7 @@ import { WorkExperienceFormComponent } from './components/work-experience-form/w
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
   {
@@ -47,5 +48,9 @@ export const routes: Routes = [
   {
     path: 'profile/work-experience-form/:id',
     component: WorkExperienceFormComponent,
+  },
+  {
+    path: '**',
+    component: PageNotFoundComponent,
   },
 ];

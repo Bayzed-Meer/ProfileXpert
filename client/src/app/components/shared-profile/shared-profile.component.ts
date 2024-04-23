@@ -21,6 +21,8 @@ export class SharedProfileComponent implements OnInit {
   shareForm!: FormGroup;
   sharedUser: any[] = [];
   errorMessage!: string;
+  loading: boolean = false;
+  loadingShare: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -40,12 +42,15 @@ export class SharedProfileComponent implements OnInit {
   }
 
   fetchSharedUserData(): void {
+    this.loading = true;
     this.userService.getSharedUser().subscribe({
       next: (response) => {
         console.log('Shared User Data fetching successful', response);
         this.sharedUser = response;
+        this.loading = false;
       },
       error: (err) => {
+        this.loading = false;
         console.log('Error fetching shared UserData', err);
       },
     });
@@ -57,14 +62,17 @@ export class SharedProfileComponent implements OnInit {
 
   onSubmit(): void {
     if (this.shareForm.valid) {
+      this.loadingShare = true;
       const formData = this.shareForm.value;
       this.userService.shareProfile(formData).subscribe({
         next: (response) => {
           console.log('Profile share successful', response);
           this.shareForm.reset();
+          this.loadingShare = false;
           window.alert('Profile shared successfully');
         },
         error: (err) => {
+          this.loadingShare = false;
           this.errorMessage = err.error.message;
           console.log('Error sharing profile', err);
         },

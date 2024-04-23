@@ -24,6 +24,7 @@ export class BasicInfoFormComponent implements OnInit {
   profileForm!: FormGroup;
   profileData!: BasicInfo;
   newUser: boolean = true;
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -88,6 +89,8 @@ export class BasicInfoFormComponent implements OnInit {
     this.markFormGroupTouched(this.profileForm);
 
     if (this.profileForm.valid) {
+      this.loading = true;
+
       const formData = new FormData();
 
       formData.append('name', this.profileForm.get('name')!.value);
@@ -111,20 +114,24 @@ export class BasicInfoFormComponent implements OnInit {
           this.userService.createProfile(formData).subscribe({
             next: (response) => {
               console.log('Profile created successfully:', response);
+              this.loading = false;
               this.router.navigate(['profile']);
             },
             error: (err) => {
               console.error('Error creating profile:', err);
+              this.loading = false;
             },
           });
         } else {
           this.userService.updateProfile(formData).subscribe({
             next: (response) => {
               console.log('Profile updated successfully:', response);
+              this.loading = false;
               this.router.navigate(['profile']);
             },
             error: (err) => {
               console.error('Error updating profile:', err);
+              this.loading = false;
             },
           });
         }
@@ -138,6 +145,7 @@ export class BasicInfoFormComponent implements OnInit {
         };
         this.indexedDBService.storeProfileData(profileData);
         console.log('Profile data stored in IndexedDB');
+        this.loading = false;
         this.router.navigate(['profile']);
       }
     }

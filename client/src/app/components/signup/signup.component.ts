@@ -20,6 +20,7 @@ import { passwordMatchValidator } from '../../custom-validators/password-match-v
 export class SignupComponent implements OnInit {
   signup!: FormGroup;
   errorMessage: string = '';
+  loading: boolean = false;
 
   constructor(
     private router: Router,
@@ -69,14 +70,18 @@ export class SignupComponent implements OnInit {
 
       delete formData.confirmPassword;
 
+      this.loading = true;
+
       this.authService.signup(formData).subscribe({
         next: (response) => {
           console.log('signup successful', response);
+          this.loading = false;
           this.router.navigate(['profile']);
         },
         error: (err) => {
           this.errorMessage = err.error.message;
           console.error('Signup failed:', err);
+          this.loading = false;
         },
       });
     }

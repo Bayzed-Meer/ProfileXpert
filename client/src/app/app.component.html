@@ -64,7 +64,7 @@
       >
     </li>
     <!-- SignUp -->
-    <li>
+    <li *ngIf="!isLoggedIn">
       <a
         routerLink="signup"
         routerLinkActive="text-blue-500"
