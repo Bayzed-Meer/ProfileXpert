@@ -10,8 +10,8 @@ import { WorkExperience } from '../models/work-experience.model';
   providedIn: 'root',
 })
 export class UserService {
-  private API: string = 'http://localhost:3000';
-  // private API: string = 'https://profilexpert.onrender.com';
+  // private API: string = 'http://localhost:3000';
+  private API: string = 'https://profilexpert.onrender.com';
 
   constructor(private http: HttpClient) {}
 
