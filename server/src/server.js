@@ -12,17 +12,24 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-//middleware
-app.use(cors());
+// middleware
+app.use(
+  cors({
+    origin: "https://profilexpert.netlify.app",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
-//routes
+// routes
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
 
-//connect to mongoDB
+// connect to MongoDB
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to Database"))
