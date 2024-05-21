@@ -3,18 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { AuthResponse } from '../models/auth-response.model';
+import { Token } from '../models/token.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // private API: string = 'http://localhost:3000';
-  private API: string = 'https://profilexpert.onrender.com';
-  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  private API: string = 'http://localhost:3000';
+  // private API: string = 'https://profilexpert.onrender.com';
+  private isLoggedIn$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient) {
-    this.checkTokenValidity();
-  }
+  constructor(private http: HttpClient) {}
 
   signup(formData: FormData): Observable<AuthResponse> {
     return this.http
@@ -22,7 +21,7 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.setToken(response.token);
-          this.isLoggedInSubject.next(true);
+          this.isLoggedIn$.next(true);
         })
       );
   }
@@ -33,13 +32,14 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.setToken(response.token);
-          this.isLoggedInSubject.next(true);
+          this.isLoggedIn$.next(true);
         })
       );
   }
 
   isLoggedIn(): Observable<boolean> {
-    return this.isLoggedInSubject.asObservable();
+    this.checkTokenValidity();
+    return this.isLoggedIn$.asObservable();
   }
 
   private setToken(token: string): void {
@@ -52,20 +52,16 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('Token');
-    this.isLoggedInSubject.next(false);
+    this.isLoggedIn$.next(false);
   }
 
   private checkTokenValidity(): void {
     const token = this.getToken();
     if (token) {
-      const decodedToken: any = jwtDecode(token);
-
+      const decodedToken: Token = jwtDecode(token);
       const expirationTime = decodedToken.exp * 1000;
-      if (Date.now() <= expirationTime) {
-        this.isLoggedInSubject.next(true);
-      } else {
-        this.logout();
-      }
+      if (Date.now() <= expirationTime) this.isLoggedIn$.next(true);
+      else this.logout();
     }
   }
 }

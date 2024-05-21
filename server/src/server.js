@@ -13,13 +13,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // middleware
-app.use(
-  cors({
-    origin: "https://profilexpert.netlify.app",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://profilexpert.netlify.app",
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

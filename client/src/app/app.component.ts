@@ -1,7 +1,9 @@
-import { Component, HostBinding, effect, signal } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { CommonModule } from '@angular/common';
+import { tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -12,24 +14,31 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   isLoggedIn: boolean = false;
-  logo: string = './../assets/logo.png';
   isMobileMenuOpen: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private destroyRef: DestroyRef
+  ) {}
 
   ngOnInit(): void {
     this.checkLoggedInStatus();
   }
 
   checkLoggedInStatus(): void {
-    this.authService.isLoggedIn().subscribe((isLoggedIn) => {
-      this.isLoggedIn = isLoggedIn;
-    });
+    this.authService
+      .isLoggedIn()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((status: boolean) => (this.isLoggedIn = status))
+      )
+      .subscribe();
   }
 
   logout(): void {
-    this.router.navigate(['signin']);
     this.authService.logout();
+    this.router.navigate(['signin']);
   }
 
   toggleMobileMenu(): void {
