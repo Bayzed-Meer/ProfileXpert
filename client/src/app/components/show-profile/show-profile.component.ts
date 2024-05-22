@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, DestroyRef, Input } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Profile } from '../../models/profile.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-show-profile',
@@ -15,23 +17,31 @@ export class ShowProfileComponent {
   userData!: Profile;
   loading: boolean = true;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private destroyRef: DestroyRef
+  ) {}
 
   ngOnInit(): void {
     this.getUserData(this.userId);
   }
 
   getUserData(userId: string) {
-    this.userService.getSharedUserData(userId).subscribe({
-      next: (data) => {
-        this.userData = data;
-        this.loading = false;
-      },
-      error: (error) => {
-        this.loading = false;
-        console.error('Error fetching user data:', error);
-      },
-    });
+    this.userService
+      .getSharedUserData(userId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((data) => {
+          this.userData = data;
+          this.loading = false;
+        }),
+        catchError((error) => {
+          this.loading = false;
+          console.error(error);
+          return of(error);
+        })
+      )
+      .subscribe();
   }
 
   getUserProfilePictureUrl(): string {
