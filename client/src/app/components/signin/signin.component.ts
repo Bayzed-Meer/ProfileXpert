@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,6 +8,8 @@ import {
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-signin',
@@ -24,7 +26,8 @@ export class SigninComponent {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit() {
@@ -41,22 +44,24 @@ export class SigninComponent {
   onSubmit() {
     this.markFormGroupTouched(this.signin);
     if (this.signin.valid) {
+      this.loading = true;
       const formData = { ...this.signin.value };
 
-      this.loading = true;
-
-      this.authService.signin(formData).subscribe({
-        next: (response) => {
-          console.log('signin successful', response);
-          this.loading = false;
-          this.router.navigate(['profile']);
-        },
-        error: (err) => {
-          this.errorMessage = err.error.message;
-          console.error('signin failed:', err);
-          this.loading = false;
-        },
-      });
+      this.authService
+        .signin(formData)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          tap((response) => {
+            this.loading = false;
+            this.router.navigate(['profile']);
+          }),
+          catchError((error) => {
+            this.loading = false;
+            this.errorMessage = error.error.message;
+            return of(error);
+          })
+        )
+        .subscribe();
     }
   }
 
