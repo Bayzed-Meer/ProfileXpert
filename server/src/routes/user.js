@@ -12,9 +12,8 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const firstName = req.body.name.split(" ")[0];
-    const lastFourDigits = req.params.userId.slice(-4);
     const ext = path.extname(file.originalname);
-    const fileName = `${firstName}${lastFourDigits}${ext}`;
+    const fileName = `${firstName}${ext}`;
     cb(null, fileName);
   },
 });

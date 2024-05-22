@@ -123,7 +123,6 @@ export class WorkExperienceFormComponent implements OnInit {
               this.router.navigate(['profile']);
             }),
             catchError((error) => {
-              this.loading = false;
               console.error(error);
               return of(error);
             })

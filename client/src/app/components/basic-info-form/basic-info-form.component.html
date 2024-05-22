@@ -133,6 +133,14 @@
           </div>
         </div>
 
+        <!-- Server-side Error Message -->
+        <span
+          *ngIf="errorMessage"
+          class="text-red-500 text-xs md:text-sm font-serif mt-1"
+        >
+          {{ errorMessage }}
+        </span>
+
         <!-- Submit Button -->
         <button
           type="submit"
