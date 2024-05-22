@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,8 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { passwordMatchValidator } from '../../custom-validators/password-match-validator';
+import { catchError, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-signup',
@@ -19,13 +21,14 @@ import { passwordMatchValidator } from '../../custom-validators/password-match-v
 })
 export class SignupComponent implements OnInit {
   signup!: FormGroup;
-  errorMessage: string = '';
+  errorMessage!: string;
   loading: boolean = false;
 
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit() {
@@ -66,24 +69,25 @@ export class SignupComponent implements OnInit {
   onSubmit() {
     this.markFormGroupTouched(this.signup);
     if (this.signup.valid) {
+      this.loading = true;
       const formData = { ...this.signup.value };
-
       delete formData.confirmPassword;
 
-      this.loading = true;
-
-      this.authService.signup(formData).subscribe({
-        next: (response) => {
-          console.log('signup successful', response);
-          this.loading = false;
-          this.router.navigate(['profile']);
-        },
-        error: (err) => {
-          this.errorMessage = err.error.message;
-          console.error('Signup failed:', err);
-          this.loading = false;
-        },
-      });
+      this.authService
+        .signup(formData)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          tap((response) => {
+            this.loading = false;
+            this.router.navigate(['profile']);
+          }),
+          catchError((error) => {
+            this.loading = false;
+            this.errorMessage = error.error.message;
+            return of(error);
+          })
+        )
+        .subscribe();
     }
   }
 
