@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit } from '@angular/core';
 import { WorkExperience } from '../../models/work-experience.model';
 import {
   FormBuilder,
@@ -9,6 +9,8 @@ import {
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { catchError, of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-work-experience-form',
@@ -28,7 +30,8 @@ export class WorkExperienceFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
@@ -55,10 +58,10 @@ export class WorkExperienceFormComponent implements OnInit {
     this.maxDate = new Date().toISOString().split('T')[0];
   }
 
-  fillworkExperienceForm(workExp: any): FormGroup {
+  fillworkExperienceForm(workExp: WorkExperience): FormGroup {
     return this.fb.group({
-      startDate: [this.formatDate(workExp.startDate)],
-      endDate: [this.formatDate(workExp.endDate)],
+      startDate: [this.formatDate(String(workExp.startDate))],
+      endDate: [this.formatDate(String(workExp.endDate))],
       current: [workExp.current],
       jobTitle: [workExp.jobTitle],
       company: [workExp.company],
@@ -67,17 +70,22 @@ export class WorkExperienceFormComponent implements OnInit {
   }
 
   fetchWorkExperienceData(): void {
-    this.userService.getWorkExperience(this.id).subscribe({
-      next: (response) => {
-        this.workExperience = response;
-        this.workExperienceForm = this.fillworkExperienceForm(
-          this.workExperience
-        );
-      },
-      error: (err) => {
-        console.error('Error fetching work experience', err);
-      },
-    });
+    this.userService
+      .getWorkExperience(this.id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((workExp: WorkExperience) => {
+          this.workExperience = workExp;
+          this.workExperienceForm = this.fillworkExperienceForm(
+            this.workExperience
+          );
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(error);
+        })
+      )
+      .subscribe();
   }
 
   formatDate(dateString: string | null): string | null {
@@ -101,40 +109,48 @@ export class WorkExperienceFormComponent implements OnInit {
     this.markFormGroupTouched(this.workExperienceForm);
 
     if (this.workExperienceForm.valid) {
-      const formData = this.workExperienceForm.value;
       this.loading = true;
+      const formData = { ...this.workExperienceForm.value };
 
-      if (!this.id) {
-        this.userService.addWorkExperience(formData).subscribe({
-          next: (response) => {
-            console.log('Work experience added successfully', response);
-            this.workExperienceForm.reset();
-            this.loading = false;
-            this.router.navigate(['profile']);
-          },
-          error: (err) => {
-            console.error('Error adding work experience', err);
-            this.loading = false;
-          },
-        });
+      if (this.id) {
+        this.userService
+          .updateWorkExperience(formData, this.id)
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap((response) => {
+              this.loading = false;
+              this.workExperienceForm.reset();
+              this.router.navigate(['profile']);
+            }),
+            catchError((error) => {
+              this.loading = false;
+              console.error(error);
+              return of(error);
+            })
+          )
+          .subscribe();
       } else {
-        this.userService.updateWorkExperience(formData, this.id).subscribe({
-          next: (response) => {
-            console.log('Work experience added successfully', response);
-            this.workExperienceForm.reset();
-            this.loading = false;
-            this.router.navigate(['profile']);
-          },
-          error: (err) => {
-            console.error('Error adding work experience', err);
-            this.loading = false;
-          },
-        });
+        this.userService
+          .addWorkExperience(formData)
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            tap((response) => {
+              this.loading = false;
+              this.workExperienceForm.reset();
+              this.router.navigate(['profile']);
+            }),
+            catchError((error) => {
+              this.loading = false;
+              console.error(error);
+              return of(error);
+            })
+          )
+          .subscribe();
       }
     }
   }
 
-  private markFormGroupTouched(formGroup: FormGroup) {
+  markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach((control) => {
       control.markAsTouched();
       if (control instanceof FormGroup) {
