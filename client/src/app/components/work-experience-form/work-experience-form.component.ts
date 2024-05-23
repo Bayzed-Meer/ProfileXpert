@@ -58,10 +58,10 @@ export class WorkExperienceFormComponent implements OnInit {
     this.maxDate = new Date().toISOString().split('T')[0];
   }
 
-  fillworkExperienceForm(workExp: WorkExperience): FormGroup {
+  fillworkExperienceForm(workExp: any): FormGroup {
     return this.fb.group({
-      startDate: [this.formatDate(String(workExp.startDate))],
-      endDate: [this.formatDate(String(workExp.endDate))],
+      startDate: [this.formatDate(workExp.startDate)],
+      endDate: [this.formatDate(workExp.endDate)],
       current: [workExp.current],
       jobTitle: [workExp.jobTitle],
       company: [workExp.company],
@@ -97,12 +97,13 @@ export class WorkExperienceFormComponent implements OnInit {
   }
 
   toggleCurrent(): void {
-    const currentValue = this.workExperienceForm.get('current')!.value;
+    const currentValue = this.workExperienceForm.get('current')?.value;
     const endDateControl = this.workExperienceForm.get('endDate');
-
     if (currentValue) {
       endDateControl?.setValue(null);
-    }
+      endDateControl?.clearValidators();
+      endDateControl?.updateValueAndValidity();
+    } else endDateControl?.setValidators(Validators.required);
   }
 
   onSubmit(): void {
