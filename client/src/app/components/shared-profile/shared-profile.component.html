@@ -25,9 +25,9 @@
         />
       </svg>
     </div>
-    <div *ngIf="sharedUser.length > 0 && !loading">
+    <div *ngIf="sharedUsers.length > 0 && !loading">
       <div
-        *ngFor="let user of sharedUser; let i = index"
+        *ngFor="let user of sharedUsers; let i = index"
         class="flex items-center justify-between px-4 md:px-8 py-2 md:py-3 border border-b-gray-200"
       >
         <div
@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="sharedUser.length === 0 && !loading">
+    <div *ngIf="sharedUsers.length === 0 && !loading">
       <p
         class="text-xs md:text-sm font-semibold font-serif text-gray-700 text-center py-4"
       >

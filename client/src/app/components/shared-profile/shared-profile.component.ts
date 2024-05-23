@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,8 @@ import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SharedUser } from '../../models/shared-user.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-shared-profile',
@@ -19,7 +21,7 @@ import { SharedUser } from '../../models/shared-user.model';
 })
 export class SharedProfileComponent implements OnInit {
   shareForm!: FormGroup;
-  sharedUser: any[] = [];
+  sharedUsers: SharedUser[] = [];
   errorMessage!: string;
   loading: boolean = false;
   loadingShare: boolean = false;
@@ -27,7 +29,8 @@ export class SharedProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
@@ -43,17 +46,21 @@ export class SharedProfileComponent implements OnInit {
 
   fetchSharedUserData(): void {
     this.loading = true;
-    this.userService.getSharedUser().subscribe({
-      next: (response) => {
-        console.log('Shared User Data fetching successful', response);
-        this.sharedUser = response;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.loading = false;
-        console.log('Error fetching shared UserData', err);
-      },
-    });
+    this.userService
+      .getSharedUser()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((response) => {
+          this.loading = false;
+          this.sharedUsers = response;
+        }),
+        catchError((error) => {
+          this.loading = false;
+          console.error(error);
+          return of(error);
+        })
+      )
+      .subscribe();
   }
 
   onViewProfile(userId: string): void {
@@ -64,19 +71,23 @@ export class SharedProfileComponent implements OnInit {
     if (this.shareForm.valid) {
       this.loadingShare = true;
       const formData = this.shareForm.value;
-      this.userService.shareProfile(formData).subscribe({
-        next: (response) => {
-          console.log('Profile share successful', response);
-          this.shareForm.reset();
-          this.loadingShare = false;
-          window.alert('Profile shared successfully');
-        },
-        error: (err) => {
-          this.loadingShare = false;
-          this.errorMessage = err.error.message;
-          console.log('Error sharing profile', err);
-        },
-      });
+      this.userService
+        .shareProfile(formData)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          tap((response) => {
+            this.shareForm.reset();
+            this.loadingShare = false;
+            window.alert('Profile shared successfully');
+          }),
+          catchError((error) => {
+            this.loadingShare = false;
+            this.errorMessage = error.error.message;
+            console.log(error);
+            return of(error);
+          })
+        )
+        .subscribe();
     }
   }
 }

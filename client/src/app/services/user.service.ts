@@ -40,8 +40,8 @@ export class UserService {
     );
   }
 
-  getSharedUser(): Observable<any> {
-    return this.http.get<any>(`${this.API}/users/getSharedUser`);
+  getSharedUser(): Observable<SharedUser[]> {
+    return this.http.get<SharedUser[]>(`${this.API}/users/getSharedUser`);
   }
 
   getSharedUserData(userId: string): Observable<Profile> {
