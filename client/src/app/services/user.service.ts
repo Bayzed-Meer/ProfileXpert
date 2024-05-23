@@ -45,7 +45,9 @@ export class UserService {
   }
 
   getSharedUserData(userId: string): Observable<Profile> {
-    return this.http.get<Profile>(`${this.API}/users/getSharedUserData/${userId}`);
+    return this.http.get<Profile>(
+      `${this.API}/users/getSharedUserData/${userId}`
+    );
   }
 
   addWorkExperience(formData: FormData): Observable<BasicApiResponse> {

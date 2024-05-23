@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Profile } from '../../models/profile.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-profile-page',
@@ -20,33 +22,42 @@ export class ProfilePageComponent {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
     this.checkLoggedInStatus();
+    if (this.isLoggedIn) this.getUserData();
+    else this.loading = false;
   }
 
   checkLoggedInStatus(): void {
-    this.authService.isLoggedIn().subscribe((isLoggedIn) => {
-      this.isLoggedIn = isLoggedIn;
-      if (this.isLoggedIn) {
-        this.getUserData();
-      } else this.loading = false;
-    });
+    this.authService
+      .isLoggedIn()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((status: boolean) => (this.isLoggedIn = status))
+      )
+      .subscribe();
   }
 
   getUserData() {
-    this.userService.getProfile().subscribe({
-      next: (response) => {
-        this.loading = false;
-        this.userData = response;
-      },
-      error: (err) => {
-        console.error('Error fetching user data:', err);
-        this.loading = false;
-      },
-    });
+    this.userService
+      .getProfile()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((data) => {
+          this.userData = data;
+          this.loading = false;
+        }),
+        catchError((error) => {
+          this.loading = false;
+          console.error(error);
+          return of(error);
+        })
+      )
+      .subscribe();
   }
 
   editWorkExp(id: string): void {
@@ -55,21 +66,26 @@ export class ProfilePageComponent {
 
   deleteWorkExp(id: string): void {
     const confirmed = window.confirm(
-      'Are you sure you want to delete this work experience?'
+      `Are you sure? you want to delete this work experience?`
     );
 
     if (confirmed) {
-      this.userService.deleteWorkExperience(id).subscribe({
-        next: (response) => {
-          console.log('Work experience deleted', response);
-          this.userData.workExperiences = this.userData.workExperiences.filter(
-            (experience: any) => experience._id !== id
-          );
-        },
-        error: (err) => {
-          console.log('Error deleting work experience', err);
-        },
-      });
+      this.userService
+        .deleteWorkExperience(id)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          tap((response) => {
+            this.userData.workExperiences =
+              this.userData.workExperiences.filter(
+                (experience: any) => experience._id !== id
+              );
+          }),
+          catchError((error) => {
+            console.error(error);
+            return of(error);
+          })
+        )
+        .subscribe();
     }
   }
 
