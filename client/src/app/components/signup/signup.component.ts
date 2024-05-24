@@ -76,7 +76,6 @@ export class SignupComponent implements OnInit {
       this.authService
         .signup(formData)
         .pipe(
-          takeUntilDestroyed(this.destroyRef),
           tap((response) => {
             this.loading = false;
             this.router.navigate(['profile']);
@@ -85,7 +84,8 @@ export class SignupComponent implements OnInit {
             this.loading = false;
             this.errorMessage = error.error.message;
             return of(error);
-          })
+          }),
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe();
     }

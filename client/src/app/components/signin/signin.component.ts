@@ -50,7 +50,6 @@ export class SigninComponent {
       this.authService
         .signin(formData)
         .pipe(
-          takeUntilDestroyed(this.destroyRef),
           tap((response) => {
             this.loading = false;
             this.router.navigate(['profile']);
@@ -59,7 +58,8 @@ export class SigninComponent {
             this.loading = false;
             this.errorMessage = error.error.message;
             return of(error);
-          })
+          }),
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe();
     }

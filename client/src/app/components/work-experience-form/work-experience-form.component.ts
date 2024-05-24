@@ -73,7 +73,6 @@ export class WorkExperienceFormComponent implements OnInit {
     this.userService
       .getWorkExperience(this.id)
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
         tap((workExp: WorkExperience) => {
           this.workExperience = workExp;
           this.workExperienceForm = this.fillworkExperienceForm(
@@ -83,7 +82,8 @@ export class WorkExperienceFormComponent implements OnInit {
         catchError((error) => {
           console.error(error);
           return of(error);
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -117,7 +117,6 @@ export class WorkExperienceFormComponent implements OnInit {
         this.userService
           .updateWorkExperience(formData, this.id)
           .pipe(
-            takeUntilDestroyed(this.destroyRef),
             tap((response) => {
               this.loading = false;
               this.workExperienceForm.reset();
@@ -126,14 +125,14 @@ export class WorkExperienceFormComponent implements OnInit {
             catchError((error) => {
               console.error(error);
               return of(error);
-            })
+            }),
+            takeUntilDestroyed(this.destroyRef)
           )
           .subscribe();
       } else {
         this.userService
           .addWorkExperience(formData)
           .pipe(
-            takeUntilDestroyed(this.destroyRef),
             tap((response) => {
               this.loading = false;
               this.workExperienceForm.reset();
@@ -143,7 +142,8 @@ export class WorkExperienceFormComponent implements OnInit {
               this.loading = false;
               console.error(error);
               return of(error);
-            })
+            }),
+            takeUntilDestroyed(this.destroyRef)
           )
           .subscribe();
       }

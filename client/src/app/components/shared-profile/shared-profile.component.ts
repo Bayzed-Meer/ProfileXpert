@@ -49,7 +49,6 @@ export class SharedProfileComponent implements OnInit {
     this.userService
       .getSharedUser()
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
         tap((response) => {
           this.loading = false;
           this.sharedUsers = response;
@@ -58,7 +57,8 @@ export class SharedProfileComponent implements OnInit {
           this.loading = false;
           console.error(error);
           return of(error);
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -74,7 +74,6 @@ export class SharedProfileComponent implements OnInit {
       this.userService
         .shareProfile(formData)
         .pipe(
-          takeUntilDestroyed(this.destroyRef),
           tap((response) => {
             this.shareForm.reset();
             this.loadingShare = false;
@@ -85,7 +84,8 @@ export class SharedProfileComponent implements OnInit {
             this.errorMessage = error.error.message;
             console.log(error);
             return of(error);
-          })
+          }),
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe();
     }

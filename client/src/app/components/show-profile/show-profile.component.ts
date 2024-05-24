@@ -30,7 +30,6 @@ export class ShowProfileComponent {
     this.userService
       .getSharedUserData(userId)
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
         tap((data) => {
           this.userData = data;
           this.loading = false;
@@ -39,7 +38,8 @@ export class ShowProfileComponent {
           this.loading = false;
           console.error(error);
           return of(error);
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }

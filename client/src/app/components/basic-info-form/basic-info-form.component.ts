@@ -10,9 +10,9 @@ import {
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { ageValidator } from '../../custom-validators/age-validator';
-import { BasicInfo } from '../../models/basic-Info.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap } from 'rxjs';
+import { BasicInfo } from '../../models/Basic-Info.model';
 
 @Component({
   selector: 'app-basic-info-form',
@@ -54,7 +54,6 @@ export class BasicInfoFormComponent implements OnInit {
     this.userService
       .getProfile()
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
         tap((userData) => {
           if (userData) {
             this.profileData = userData;
@@ -65,7 +64,8 @@ export class BasicInfoFormComponent implements OnInit {
         catchError((error) => {
           console.error('error', error);
           return of(error);
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -108,7 +108,6 @@ export class BasicInfoFormComponent implements OnInit {
         this.userService
           .createProfile(formData)
           .pipe(
-            takeUntilDestroyed(this.destroyRef),
             tap((response) => {
               this.loading = false;
               this.router.navigate(['profile']);
@@ -118,14 +117,14 @@ export class BasicInfoFormComponent implements OnInit {
               console.error(error);
               this.errorMessage = error.error.errors.age;
               return of(error);
-            })
+            }),
+            takeUntilDestroyed(this.destroyRef)
           )
           .subscribe();
       } else {
         this.userService
           .updateProfile(formData)
           .pipe(
-            takeUntilDestroyed(this.destroyRef),
             tap((response) => {
               this.loading = false;
               this.router.navigate(['profile']);
@@ -135,7 +134,8 @@ export class BasicInfoFormComponent implements OnInit {
               console.error(error);
               this.errorMessage = error.error.errors.age;
               return of(error);
-            })
+            }),
+            takeUntilDestroyed(this.destroyRef)
           )
           .subscribe();
       }

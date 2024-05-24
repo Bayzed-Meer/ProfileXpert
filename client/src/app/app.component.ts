@@ -30,8 +30,8 @@ export class AppComponent {
     this.authService
       .isLoggedIn()
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((status: boolean) => (this.isLoggedIn = status))
+        tap((status: boolean) => (this.isLoggedIn = status)),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }

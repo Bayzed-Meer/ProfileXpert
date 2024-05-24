@@ -36,8 +36,8 @@ export class ProfilePageComponent {
     this.authService
       .isLoggedIn()
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((status: boolean) => (this.isLoggedIn = status))
+        tap((status: boolean) => (this.isLoggedIn = status)),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -46,7 +46,6 @@ export class ProfilePageComponent {
     this.userService
       .getProfile()
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
         tap((data) => {
           this.userData = data;
           this.loading = false;
@@ -55,7 +54,8 @@ export class ProfilePageComponent {
           this.loading = false;
           console.error(error);
           return of(error);
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
@@ -73,7 +73,6 @@ export class ProfilePageComponent {
       this.userService
         .deleteWorkExperience(id)
         .pipe(
-          takeUntilDestroyed(this.destroyRef),
           tap((response) => {
             this.userData.workExperiences =
               this.userData.workExperiences.filter(
@@ -83,7 +82,8 @@ export class ProfilePageComponent {
           catchError((error) => {
             console.error(error);
             return of(error);
-          })
+          }),
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe();
     }
