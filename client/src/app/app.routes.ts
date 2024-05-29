@@ -28,26 +28,47 @@ export const routes: Routes = [
       ),
     canActivate: [() => inject(AuthService).isLoggedIn()],
   },
-  { path: 'viewProfile/:userId', component: ShowProfileComponent },
+  {
+    path: 'viewProfile/:userId',
+    loadComponent: () =>
+      import('./components/show-profile/show-profile.component').then(
+        (m) => m.ShowProfileComponent
+      ),
+  },
   {
     path: 'signup',
-    component: SignupComponent,
+    loadComponent: () =>
+      import('./components/signup/signup.component').then(
+        (m) => m.SignupComponent
+      ),
   },
   {
     path: 'signin',
-    component: SigninComponent,
+    loadComponent: () =>
+      import('./components/signin/signin.component').then(
+        (m) => m.SigninComponent
+      ),
   },
   {
     path: 'profile/basic-info-form',
-    component: BasicInfoFormComponent,
+    loadComponent: () =>
+      import('./components/basic-info-form/basic-info-form.component').then(
+        (m) => m.BasicInfoFormComponent
+      ),
   },
   {
     path: 'profile/work-experience-form',
-    component: WorkExperienceFormComponent,
+    loadComponent: () =>
+      import(
+        './components/work-experience-form/work-experience-form.component'
+      ).then((m) => m.WorkExperienceFormComponent),
   },
   {
     path: 'profile/work-experience-form/:id',
-    component: WorkExperienceFormComponent,
+    loadComponent: () =>
+      import(
+        './components/work-experience-form/work-experience-form.component'
+      ).then((m) => m.WorkExperienceFormComponent),
   },
   {
     path: '**',
