@@ -9,8 +9,8 @@ import { Token } from '../models/token.model';
   providedIn: 'root',
 })
 export class AuthService {
-  private API: string = 'http://localhost:3000';
-  // private API: string = 'https://profilexpert.onrender.com';
+  // private API: string = 'http://localhost:3000';
+  private API: string = 'https://profilexpert.onrender.com';
   private isLoggedIn$ = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {}

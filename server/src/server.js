@@ -12,16 +12,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// middleware
-// app.use(
-//   cors({
-//     origin: "https://profilexpert.netlify.app",
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
+//middlewares
+const corsOptions = {
+  credentials: true,
+  origin: ["http://localhost:4200", "https://profilexpert.netlify.app"],
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
